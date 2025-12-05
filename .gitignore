@@ -1,0 +1,42 @@
+# IDE-specific settings (not critical to share)
+.settings/
+
+# STM32CubeIDE specific files
+.vscode/*
+!.vscode/*.json
+
+# STM32CubeIDE project files
+!.cproject
+!.project
+!.mxproject
+!*.launch
+
+# Object and dependency files
+!*.mk
+!makefile
+!objects.mk
+!sources.mk
+!objects.list
+
+# Build artifacts
+*.map
+*.o
+*.d
+*.a
+*.dep
+*.su
+*.log
+*.bak
+*.tmp
+*.cyclo
+
+# Cube-generated backups
+*~
+*.swp
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Workspace-wide metadata (in parent folder)
+../.metadata/
