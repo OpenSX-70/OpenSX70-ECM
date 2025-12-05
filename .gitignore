@@ -29,6 +29,9 @@
 *.bak
 *.tmp
 *.cyclo
+*.cache
+*.obj
+OpenSX70_Core/build
 
 # Cube-generated backups
 *~
