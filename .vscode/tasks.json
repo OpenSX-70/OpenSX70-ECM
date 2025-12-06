@@ -2,15 +2,52 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"type": "cmake",
-			"label": "CMake: build",
-			"command": "build",
-			"targets": [
-				"all"
+			"type": "shell",
+			"label": "CMake: Configure",
+			"command": "cmake",
+			"args": [
+				"-DCMAKE_BUILD_TYPE=Debug",
+				"-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/OpenSX70_Core/cmake/gcc-arm-none-eabi.cmake",
+				"-S",
+				"${workspaceFolder}/OpenSX70_Core",
+				"-B",
+				"${workspaceFolder}/build/Debug"
 			],
-			"group": "build",
 			"problemMatcher": [],
-			"detail": "CMake template build task"
+			"detail": "Configure CMake project"
+		},
+		{
+			"type": "shell",
+			"label": "CMake: Build",
+			"command": "cmake",
+			"args": [
+				"--build",
+				"${workspaceFolder}/build/Debug",
+				"--config",
+				"Debug"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"detail": "Build the CMake project",
+			"dependsOn": [
+				"CMake: Configure"
+			]
+		},
+		{
+			"type": "shell",
+			"label": "CMake: Clean",
+			"command": "rm",
+			"args": [
+				"-rf",
+				"${workspaceFolder}/build"
+			],
+			"problemMatcher": [],
+			"detail": "Clean build directory"
 		}
 	]
 }
