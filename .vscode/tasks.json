@@ -3,7 +3,7 @@
 	"tasks": [
 		{
 			"type": "shell",
-			"label": "CMake: Configure",
+			"label": "CMake: Configure Debug",
 			"command": "cmake",
 			"args": [
 				"-DCMAKE_BUILD_TYPE=Debug",
@@ -36,6 +36,40 @@
 			"detail": "Build the CMake project",
 			"dependsOn": [
 				"CMake: Configure"
+			]
+		},
+		{
+			"type": "shell",
+			"label": "CMake: Configure Release",
+			"command": "cmake",
+			"args": [
+				"-DCMAKE_BUILD_TYPE=Release",
+				"-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/OpenSX70_Core/cmake/gcc-arm-none-eabi.cmake",
+				"-S",
+				"${workspaceFolder}/OpenSX70_Core",
+				"-B",
+				"${workspaceFolder}/build/Release"
+			],
+			"problemMatcher": [],
+			"detail": "Configure CMake project for Release"
+		},
+		{
+			"type": "shell",
+			"label": "CMake: Build Release",
+			"command": "cmake",
+			"args": [
+				"--build",
+				"${workspaceFolder}/build/Release",
+				"--config",
+				"Release"
+			],
+			"group": "build",
+			"problemMatcher": [
+				"$gcc"
+			],
+			"detail": "Build the CMake project in Release mode",
+			"dependsOn": [
+				"CMake: Configure Release"
 			]
 		},
 		{
