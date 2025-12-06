@@ -18,7 +18,7 @@
 		},
 		{
 			"type": "shell",
-			"label": "CMake: Build",
+			"label": "CMake: Build Debug",
 			"command": "cmake",
 			"args": [
 				"--build",
