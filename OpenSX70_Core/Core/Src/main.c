@@ -19,9 +19,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "opensx70.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
