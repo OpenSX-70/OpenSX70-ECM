@@ -19,6 +19,10 @@ static const camera_state_funct STATE_MACHINE [STATE_N] = {
 //Default state
 camera_state state = STATE_DARKSLIDE;
 
+void opensx70_run_state_machine (void){
+    state = STATE_MACHINE[state]();
+}
+
 camera_state do_state_darkslide (void){
 
     //Stay in darkslide until dongle or flashbar detected
@@ -36,3 +40,4 @@ camera_state do_state_flashBar (void){
     //Stay in flashbar until darkslide detected
     return STATE_FLASHBAR;
 }
+
