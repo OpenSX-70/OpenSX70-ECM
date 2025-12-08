@@ -1,0 +1,54 @@
+#ifndef SETTINGS_H
+#define SETTINGS_H
+#include "main.h"
+
+
+
+//----------------DONGLE SWITCH FEATURE SELECTION-------------------------
+// 1 and 2 values assign features to switch 1 and 2, 0 means unused.
+// Example values:
+// #define MEXP_MODE 1   : MEXP_MODE on switch 1
+// #define SELF_TIMER 2  : SELF_TIMER on switch 2
+// #define {whatever} 0  : No switch assigned. 
+// DO NOT ASSIGN MULTIPLE THINGS TO THE SAME VALUE (except 0).
+// DOING SO WILL BREAK THINGS. YOU CANNOT HAVE MULTIPLE FUNCTIONS ASSIGNED TO THE SAME SWITCH.
+// When I have a configurator style dongle set up I will be doing validation on that side.
+// Until then, YOU will need to validate that you are not overloading a switch.
+
+#define MEXP_MODE 0
+#define SELF_TIMER 2
+#define DONGLE_AUTO_FLASH 1
+#define AUTO_STOP_DOWN 0
+
+//----------------END DONGLE SWITCH FEATURE SELECTION---------------------
+
+//---------------MAGIC NUMBERS---------------------------------------------
+#define A100 1023
+#define A600 255
+//---------------END MAGIC NUMBERS-----------------------------------------
+
+//---------------Flashbar and Dongle Flash---------------------------------
+#define Flashbar_Change 1
+#define Flash_Capture_Delay 4
+#define Flash_Max_Time 56
+#define Flash_Capture_Max_Time 12
+#define Dongle_Flash_Limit 4
+//---------------End Flash settings----------------------------------------
+
+//---------------METER SETTINGS--------------------------------------------
+#define AUTO_TIMEOUT 15000 //Sets the maximum time an auto exposure can take place. Required due to new meter design.
+#define METER_INTERVAL 100 // Sets how long each meter measurement sample is taken in ms
+#define METER_AUTO_WARNING 100 // If predicted ms is over this value, warning LED will shine in auto mode
+#define METER_PREDICTION_OFFSET 20 // in ms. This gets added to the prediction. At f8 I noticed all meter predictions were around 20ms off
+#define METER_SLOPE_HANDICAP 0 // Not used currently. Used to increase/decrease the slope of the prediction.
+//#define METER_RESET_DELAY 2 // Time required for light meter capacitor to fully reset
+//---------------END METER SETTINGS----------------------------------------
+
+// Timeout constant for peripheral communication (5ms)
+#define PERIPHERAL_TIMEOUT_MS 5
+
+extern const uint8_t POWER_DOWN_DELAY;
+extern const uint8_t Y_DELAY;
+extern const uint8_t METER_RESET_DELAY;
+
+#endif
