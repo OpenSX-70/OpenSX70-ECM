@@ -1,14 +1,17 @@
 #MicroXplorer Configuration settings - do not modify
+ADC1.AWDChannel-0\#ChannelRegularConversion=ADC_CHANNEL_3
 ADC1.Channel-0\#ChannelRegularConversion=ADC_CHANNEL_3
 ADC1.ContinuousConvMode=ENABLE
 ADC1.EnableAnalogWatchDog1=true
 ADC1.EnableAnalogWatchDog2=true
 ADC1.EnableAnalogWatchDog3=true
-ADC1.IPParameters=Rank-0\#ChannelRegularConversion,master,Channel-0\#ChannelRegularConversion,SelectedChannel,SamplingTime-0\#ChannelRegularConversion,NbrOfConversionFlag,ContinuousConvMode,EnableAnalogWatchDog1,EnableAnalogWatchDog2,EnableAnalogWatchDog3
+ADC1.IPParameters=Rank-0\#ChannelRegularConversion,master,Channel-0\#ChannelRegularConversion,SelectedChannel,SamplingTime-0\#ChannelRegularConversion,NbrOfConversionFlag,ContinuousConvMode,EnableAnalogWatchDog1,EnableAnalogWatchDog2,EnableAnalogWatchDog3,MonitoredBy-0\#ChannelRegularConversion,AWDChannel-0\#ChannelRegularConversion,WDG2ChannelR1
+ADC1.MonitoredBy-0\#ChannelRegularConversion=ADC_ANALOGWATCHDOG_2
 ADC1.NbrOfConversionFlag=1
 ADC1.Rank-0\#ChannelRegularConversion=1
 ADC1.SamplingTime-0\#ChannelRegularConversion=ADC_SAMPLINGTIME_COMMON_1
 ADC1.SelectedChannel=ADC_CHANNEL_3
+ADC1.WDG2ChannelR1=ADC_CHANNEL_3
 ADC1.master=1
 CAD.formats=
 CAD.pinconfig=
