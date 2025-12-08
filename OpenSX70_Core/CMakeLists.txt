@@ -48,6 +48,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/main.c
     Core/Src/opensx70.c
     Core/Src/camerafunctions.c
+    Core/Src/settings.c
+    Core/Src/meter.c
 )
 
 # Add include paths
