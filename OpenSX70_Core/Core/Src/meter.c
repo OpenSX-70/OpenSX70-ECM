@@ -61,7 +61,3 @@ void flashbar_exposure_init(struct meter_settings* settings){
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD2);
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD3);
 }
-
-void meter_auto(struct meter_settings* settings){
-
-}

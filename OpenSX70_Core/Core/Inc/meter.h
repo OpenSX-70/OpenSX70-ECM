@@ -23,8 +23,6 @@ void integrator_reset(void);
 void meter_set_iso(meter_iso iso_setting);
 void auto_exposure_init(struct meter_settings* settings);
 void flashbar_exposure_init(struct meter_settings* settings);
-void meter_auto(struct meter_settings* settings);
-void meter_flash(struct meter_settings* settings);
 
 extern struct meter_settings settings_640;
 extern struct meter_settings settings_125;

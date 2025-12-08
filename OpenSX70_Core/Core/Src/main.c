@@ -49,8 +49,10 @@ TIM_HandleTypeDef htim1;
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 
-/* USER CODE BEGIN PV */
 
+
+/* USER CODE BEGIN PV */
+ADC_AnalogWDGConfTypeDef AnalogWDGConfig = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -171,7 +173,6 @@ static void MX_ADC1_Init(void)
 
   /* USER CODE END ADC1_Init 0 */
 
-  ADC_AnalogWDGConfTypeDef AnalogWDGConfig = {0};
   ADC_ChannelConfTypeDef sConfig = {0};
 
   /* USER CODE BEGIN ADC1_Init 1 */
