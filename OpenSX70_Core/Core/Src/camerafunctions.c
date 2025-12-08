@@ -61,3 +61,7 @@ void darkslide_eject(){
 void auto_exposure(meter_iso iso_setting){
 
 }
+
+void auto_exposure_flashbar(meter_iso iso_setting){
+
+}
