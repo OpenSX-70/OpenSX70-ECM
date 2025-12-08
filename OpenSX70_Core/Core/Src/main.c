@@ -105,6 +105,7 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   solenoid_init();
+  integrator_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */

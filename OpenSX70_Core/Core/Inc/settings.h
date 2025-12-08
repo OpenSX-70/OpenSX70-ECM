@@ -25,6 +25,10 @@
 //---------------MAGIC NUMBERS---------------------------------------------
 #define A100 1023
 #define A600 255
+#define FD100 200
+#define FF100 260
+#define FD600 40
+#define FF600 52
 //---------------END MAGIC NUMBERS-----------------------------------------
 
 //---------------Flashbar and Dongle Flash---------------------------------
@@ -52,10 +56,6 @@ enum positions_t {POST = -100, POSB, AUTO600, AUTO100};//ANALOGUEWORKS AUTO 600B
 extern const uint8_t POWER_DOWN_DELAY;
 extern const uint8_t Y_DELAY;
 extern const uint8_t METER_RESET_DELAY;
-extern const int32_t FD100;
-extern const int32_t FF100;
-extern const int32_t FD600;
-extern const int32_t FF600;
 extern const int32_t ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
 
 

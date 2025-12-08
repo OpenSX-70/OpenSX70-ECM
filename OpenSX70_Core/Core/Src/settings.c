@@ -11,9 +11,5 @@ const uint8_t POWER_DOWN_DELAY = 15;
 // FD (Flash Delay) value is the value the meter must hit prior to the flash firing. If integration time takes longer than 56ms (Flash_Max_Time), fire the flash regardless.
 // FF (Flash Fired) value is the value the meter must hit before the shutter closes. This also has a timeout but is a much shorter 12ms (Flash_Capture_Max_Time).
 // I am hard coding these values as the magic number is no longer changing per board.
-const int32_t FD100 = 200;
-const int32_t FF100 = 260;
-const int32_t FD600 = 40; //60 50
-const int32_t FF600 = 52; //78 65
 
 const int32_t ShutterSpeed[] = {     23,   27,   32,    34,  39,   44,  56,   64,    125,  250, 500, 1000, POST, POSB, AUTO600, AUTO100 };
