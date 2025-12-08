@@ -3,6 +3,7 @@
 
 #include "main.h"
 #include "meter.h"
+#include "settings.h"
 
 extern TIM_HandleTypeDef htim1;
 

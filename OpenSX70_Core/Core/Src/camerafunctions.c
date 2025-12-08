@@ -1,6 +1,4 @@
 #include "camerafunctions.h"
-#include "main.h"
-#include "settings.h"
 
 void solenoid_init(void){
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
@@ -59,7 +57,11 @@ void darkslide_eject(){
 }
 
 void auto_exposure(meter_iso iso_setting){
+    HAL_Delay(Y_DELAY);
 
+    meter_set_iso(iso_setting);
+    integrator_reset();
+    auto_exposure_init(current_settings);
 }
 
 void auto_exposure_flashbar(meter_iso iso_setting){
