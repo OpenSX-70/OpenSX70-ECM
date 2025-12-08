@@ -2,14 +2,25 @@
 #define METER_H
 
 #include "settings.h"
-#include <stdint.h>
 
 extern ADC_HandleTypeDef hadc1;
+extern ADC_AnalogWDGConfTypeDef AnalogWDGConfig;
 
 typedef enum {
     ISO_640,
     ISO_125
 } meter_iso;
+
+typedef enum {
+    WATCHDOG_1 = 1,
+    WATCHDOG_2 = 2,
+    WATCHDOG_3 = 3
+} meter_watchdog;
+
+typedef enum {
+    MODE_AUTO,
+    MODE_FILL_FLASH
+} meter_mode;
 
 struct meter_settings{
     meter_iso iso_setting;
@@ -21,11 +32,14 @@ struct meter_settings{
 void integrator_init(void);
 void integrator_reset(void);
 void meter_set_iso(meter_iso iso_setting);
+void auto_exposure_init(struct meter_settings* settings);
+void flashbar_exposure_init(struct meter_settings* settings);
 void meter_auto(struct meter_settings* settings);
 void meter_flash(struct meter_settings* settings);
 
 extern struct meter_settings settings_640;
 extern struct meter_settings settings_125;
 extern struct meter_settings *current_settings;
+
 
 #endif
