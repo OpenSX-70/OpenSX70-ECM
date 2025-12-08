@@ -68,4 +68,7 @@ extern const uint8_t METER_RESET_DELAY;
 extern const int32_t ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
 
 
+#define FLASH_USER_DATA_ADDR  (0x08000000 + 32*1024 - 2048)
+
+
 #endif

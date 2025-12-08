@@ -1,7 +1,6 @@
 #include "opensx70.h"
 
-// Flash storage address (last page for user data)
-#define FLASH_USER_DATA_ADDR  (0x08000000 + 32*1024 - 2048)
+meter_iso savedISO;
 
 typedef camera_state (*camera_state_funct)(void);
 
@@ -28,6 +27,7 @@ void opensx70_run_state_machine (void){
 }
 
 camera_state do_state_init (void){
+    savedISO = read_iso();
     solenoid_init();
     integrator_init();
     initializePeripheralDevice(&current_dongle_state);
@@ -37,7 +37,7 @@ camera_state do_state_init (void){
         shutter_open();
     }
 
-    //TODO! S1 ISO swap call goes here
+    s1_iso_swap();
     return STATE_DARKSLIDE;
 }
 
@@ -88,8 +88,8 @@ camera_state return_state(peripheral_device *device){
     }
 }
 
-void ISOBlink(meter_iso savedISO){
-    switch(savedISO){
+void ISOBlink(meter_iso *savedISO){
+    switch(*savedISO){
         case ISO_640:
             for(uint8_t i=0; i<2; i++){
                 send_command(BLUE_ON);
@@ -113,7 +113,7 @@ void ISOBlink(meter_iso savedISO){
     }
 }
 
-void save_iso(meter_iso iso) {
+void save_iso(meter_iso *iso) {
     HAL_FLASH_Unlock();
     
     FLASH_EraseInitTypeDef eraseInit = {
@@ -127,13 +127,36 @@ void save_iso(meter_iso iso) {
     HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, FLASH_USER_DATA_ADDR, (uint64_t)iso);
     
     HAL_FLASH_Lock();
+    savedISO = *iso;
 }
 
 meter_iso read_iso(void) {
     uint32_t data = *(uint32_t*)FLASH_USER_DATA_ADDR;
 
     if (data != ISO_640 && data != ISO_125) {
-        return ISO_640;  // Default to ISO_640 if invalid
+        return ISO_640;
+        //Debug output to indicate no valid ISO found in flash
     }
     return (meter_iso)data;
+}
+
+void s1_iso_swap(void){
+    meter_iso currentISO = savedISO;
+    if(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
+        meter_iso newISO;
+        switch(currentISO){
+            case ISO_640:
+                newISO = ISO_125;
+                break;
+            case ISO_125:
+                newISO = ISO_640;
+                break;
+            default:
+                newISO = ISO_640;
+                break;
+        }
+        save_iso(&newISO);
+        ISOBlink(&savedISO);
+    }
+    while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET);
 }
