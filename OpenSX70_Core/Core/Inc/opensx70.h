@@ -2,11 +2,13 @@
 #define opensx70_h
 
 #include "main.h"
+#include "camerafunctions.h"
 
 extern TIM_HandleTypeDef htim1;
 extern ADC_HandleTypeDef hadc1;
 
 typedef enum{
+    STATE_INIT,
     STATE_DARKSLIDE,
     STATE_NODONGLE,
 //    STATE_DONGLE,
@@ -17,6 +19,7 @@ typedef enum{
 
 
 void opensx70_run_state_machine (void);
+camera_state do_state_init(void);
 camera_state do_state_darkslide(void);
 camera_state do_state_noDongle(void);
 //camera_state do_state_dongle(void);
