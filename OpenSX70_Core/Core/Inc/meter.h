@@ -11,17 +11,6 @@ typedef enum {
     ISO_125
 } meter_iso;
 
-typedef enum {
-    WATCHDOG_1 = 1,
-    WATCHDOG_2 = 2,
-    WATCHDOG_3 = 3
-} meter_watchdog;
-
-typedef enum {
-    MODE_AUTO,
-    MODE_FILL_FLASH
-} meter_mode;
-
 struct meter_settings{
     meter_iso iso_setting;
     int32_t flash_delay_threshold;
