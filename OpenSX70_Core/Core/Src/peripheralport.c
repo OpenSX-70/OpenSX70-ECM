@@ -68,3 +68,14 @@ void setPeripheralDevice(peripheral_device *device, uint8_t selector, bool switc
     device->switch2 = switch2;
     device->type = type;
 }
+
+bool get_switch_state(uint8_t switch_number){
+    switch (switch_number){
+        case 1:
+            return current_dongle_state.switch1;
+        case 2:
+            return current_dongle_state.switch2;
+        default:
+            return false;
+    }
+}

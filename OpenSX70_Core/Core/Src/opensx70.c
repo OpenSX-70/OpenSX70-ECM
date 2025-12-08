@@ -76,16 +76,14 @@ camera_state return_state(peripheral_device *device){
             #endif
             return STATE_NODONGLE;
         case PERIPHERAL_DONGLE:
-        /*
-            if(getSwitchStates(MEXP_MODE)){
-                multipleExposureMode = true;
-                mEXPFirstRun = true;
+            if(get_switch_state(MEXP_MODE)){
+                //multipleExposureMode = true;
+                //mEXPFirstRun = true;
                 return STATE_MULTI_EXP;
             }
             #if STATEDEBUG
                 DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE"));
-            #endif
-         */   
+            #endif   
             return STATE_DONGLE;
         case PERIPHERAL_FLASHBAR:
             #if STATEDEBUG

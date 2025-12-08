@@ -45,6 +45,7 @@ void setPeripheralDevice(peripheral_device *device, uint8_t selector, bool switc
 void updatePeripheralStatus(peripheral_device *device);
 void sendCommand(uint8_t command);
 bool getDongleSettings(peripheral_device *device);
+bool get_switch_state(uint8_t switch_number);
 
 extern peripheral_device current_dongle_state;
 
