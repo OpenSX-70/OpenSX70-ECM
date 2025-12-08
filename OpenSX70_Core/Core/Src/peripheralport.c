@@ -101,17 +101,14 @@ void send_command(uint8_t command){
 }
 
 bool get_dongle_settings(peripheral_device *device){
-    bool success = false;
     send_command(PERIPHERAL_READ_CMD);
 
     HAL_StatusTypeDef status = HAL_UART_Receive_DMA(&huart2, peripheral_uart_buffer, 1);
     if (status == HAL_OK) {
-        success = true;
+        return true;
     } else {
-        success = false;
+        return false;
     }
-    HAL_HalfDuplex_EnableTransmitter(&huart2);
-    return success;
 }
 
 bool get_switch_state(uint8_t switch_number){
