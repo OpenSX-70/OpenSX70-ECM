@@ -27,17 +27,10 @@
 
 typedef enum {
     PERIPHERAL_NONE = 0,
-    PERIPHERAL_DONGLE,
+    //PERIPHERAL_DONGLE,
     PERIPHERAL_FLASHBAR,
     PERIPHERAL_UNKNOWN
 } peripheral_type;
-
-typedef enum peripheral_state {
-    STATE_NODONGLE,
-    STATE_DONGLE,
-    STATE_FLASHBAR,
-    STATE_N
-} peripheral_state;
 
 
 typedef struct peripheral_device {
@@ -52,5 +45,7 @@ void setPeripheralDevice(peripheral_device *device, uint8_t selector, bool switc
 void updatePeripheralStatus(peripheral_device *device);
 void sendCommand(uint8_t command);
 bool getDongleSettings(peripheral_device *device);
+
+extern peripheral_device current_dongle_state;
 
 #endif

@@ -1,5 +1,4 @@
 #include "opensx70.h"
-#include "camerafunctions.h"
 
 typedef camera_state (*camera_state_funct)(void);
 
@@ -26,6 +25,9 @@ void opensx70_run_state_machine (void){
 }
 
 camera_state do_state_init (void){
+    solenoid_init();
+    integrator_init();
+    initializePeripheralDevice(&current_dongle_state);
     if(HAL_GPIO_ReadPin(S5_GPIO_Port, S5_Pin) != GPIO_PIN_RESET){
         shutter_close();
         mirror_down();
@@ -37,7 +39,7 @@ camera_state do_state_init (void){
 }
 
 camera_state do_state_darkslide (void){
-    
+
     //Stay in darkslide until dongle or flashbar detected
     return STATE_DARKSLIDE;
 }
