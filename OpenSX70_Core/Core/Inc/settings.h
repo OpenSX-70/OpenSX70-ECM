@@ -57,6 +57,8 @@
 
 // Timeout constant for peripheral communication (5ms)
 #define PERIPHERAL_TIMEOUT_MS 5
+#define PERIPHERAL_RESPONSE_TIMEOUT_TICKS 1000  // Assuming ~1ms per state machine tick, 1 second timeout
+
 
 enum positions_t {POST = -100, POSB, AUTO600, AUTO100};//ANALOGUEWORKS AUTO 600BW
 

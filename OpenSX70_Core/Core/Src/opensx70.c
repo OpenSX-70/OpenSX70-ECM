@@ -1,5 +1,4 @@
 #include "opensx70.h"
-#include "meter.h"
 
 // Flash storage address (last page for user data)
 #define FLASH_USER_DATA_ADDR  (0x08000000 + 32*1024 - 2048)
@@ -89,31 +88,29 @@ camera_state return_state(peripheral_device *device){
     }
 }
 
-void ISOBlink(){
-    /*
+void ISOBlink(meter_iso savedISO){
     switch(savedISO){
-        case ISO_600:
+        case ISO_640:
             for(uint8_t i=0; i<2; i++){
-                sendCommand(BLUE_ON);
-                digitalWrite(PIN_LED2, HIGH);
-                delay(100);
-                sendCommand(BLUE_OFF);
-                digitalWrite(PIN_LED2, LOW);
-                delay(100);
+                send_command(BLUE_ON);
+                HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_SET);
+                HAL_Delay(100);
+                send_command(BLUE_OFF);
+                HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
+                HAL_Delay(100);
             }
             break;
-        case ISO_SX70:
+        case ISO_125:
             for(uint8_t i=0; i<2; i++){
-                sendCommand(RED_ON);
-                digitalWrite(PIN_LED1, HIGH);
-                delay(100);
-                sendCommand(RED_OFF);
-                digitalWrite(PIN_LED1, LOW);
-                delay(100);
+                send_command(RED_ON);
+                HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+                HAL_Delay(100);
+                send_command(RED_OFF);
+                HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+                HAL_Delay(100);
             }
             break;
     }
-    */
 }
 
 void save_iso(meter_iso iso) {

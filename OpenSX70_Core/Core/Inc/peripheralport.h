@@ -23,6 +23,7 @@
 #define PERIPHERAL_READ_CMD 0xF5
 #define PERIPHERAL_SELF_TIMER_CMD 0xF6
 
+
 //extern HardwareSerial DEBUG_OUTPUT;
 
 typedef enum {
@@ -32,6 +33,12 @@ typedef enum {
     PERIPHERAL_UNKNOWN
 } peripheral_type;
 
+typedef enum peripheral_state {
+    DONGLE_STATE_NODONGLE,
+    DONGLE_STATE_DONGLE,
+    DONGLE_STATE_FLASHBAR,
+    DONGLE_STATE_N
+} peripheral_state;
 
 typedef struct peripheral_device {
     uint8_t selector;
@@ -43,10 +50,11 @@ typedef struct peripheral_device {
 void initializePeripheralDevice(peripheral_device *device);
 void setPeripheralDevice(peripheral_device *device, uint8_t selector, bool switch1, bool switch2, peripheral_type type);
 void updatePeripheralStatus(peripheral_device *device);
-void sendCommand(uint8_t command);
-bool getDongleSettings(peripheral_device *device);
+void send_command(uint8_t command);
+bool get_dongle_settings(peripheral_device *device);
 bool get_switch_state(uint8_t switch_number);
 
 extern peripheral_device current_dongle_state;
+extern UART_HandleTypeDef huart2;
 
 #endif
