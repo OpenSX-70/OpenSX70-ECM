@@ -50,6 +50,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/camerafunctions.c
     Core/Src/settings.c
     Core/Src/meter.c
+    Core/Src/peripheralport.c
 )
 
 # Add include paths
