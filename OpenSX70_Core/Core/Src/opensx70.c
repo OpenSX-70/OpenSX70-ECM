@@ -1,6 +1,10 @@
 #include "opensx70.h"
+#include "camerafunctions.h"
+#include "main.h"
+#include "stm32g0xx_hal_gpio.h"
 
 meter_iso savedISO;
+volatile bool isoBlinked = false;
 
 typedef camera_state (*camera_state_funct)(void);
 
@@ -42,32 +46,40 @@ camera_state do_state_init (void){
 }
 
 camera_state do_state_darkslide (void){
+    #if SHUTTERDARKSLIDE
+    if (HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
+    #endif
+        if ((HAL_GPIO_ReadPin(S8_GPIO_Port, S8_Pin) == GPIO_PIN_SET) && (HAL_GPIO_ReadPin(S9_GPIO_Port, S9_Pin) == GPIO_PIN_RESET)){
+            darkslide_eject();        
+        }
 
-    //Stay in darkslide until dongle or flashbar detected
+    #if SHUTTERDARKSLIDE
+    }
+    #endif
+    if(!isoBlinked){
+        ISOBlink(&savedISO);
+    }
+
     return return_state(&current_dongle_state);
 }
 
 camera_state do_state_noDongle (void){
 
-    //Stay in no dongle until darkslide detected
     return return_state(&current_dongle_state);
 }
 
 camera_state do_state_flashBar (void){
 
-    //Stay in flashbar until darkslide detected
     return return_state(&current_dongle_state);
 }
 
 camera_state do_state_dongle (void){
 
-    //Stay in dongle until darkslide detected
     return return_state(&current_dongle_state);
 }
 
 camera_state do_state_multi_exp (void){
 
-    //Stay in multi exp until darkslide detected
 }
 
 camera_state return_state(peripheral_device *device){
@@ -157,6 +169,7 @@ void s1_iso_swap(void){
         }
         save_iso(&newISO);
         ISOBlink(&savedISO);
+        isoBlinked = true;
     }
     while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET);
 }
