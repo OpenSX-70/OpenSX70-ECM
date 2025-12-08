@@ -3,6 +3,13 @@
 #include "main.h"
 
 
+//      Feature toggles
+#define SHUTTERDARKSLIDE 0       //1 Enables feature to not eject dark slide until shutter button is pressed
+#define TIMER_MIRROR_UP 1        //1 Enables mirror up feature for self timer modes
+#define EIGHT_SHOT_PACK 1        //1 Makes all counter-based functions work based on an 8 shot pack rather than 10
+#define LIGHMETER_HELPER 1       //1 Enables viewfinder light meter helper
+#define EJECT_AFTER_DEPRESSING 1 //1 Enables the user to hold the shutter button to prevent photo ejection
+
 
 //----------------DONGLE SWITCH FEATURE SELECTION-------------------------
 // 1 and 2 values assign features to switch 1 and 2, 0 means unused.
