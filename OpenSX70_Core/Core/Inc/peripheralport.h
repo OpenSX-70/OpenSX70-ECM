@@ -27,7 +27,7 @@
 
 typedef enum {
     PERIPHERAL_NONE = 0,
-    //PERIPHERAL_DONGLE,
+    PERIPHERAL_DONGLE,
     PERIPHERAL_FLASHBAR,
     PERIPHERAL_UNKNOWN
 } peripheral_type;

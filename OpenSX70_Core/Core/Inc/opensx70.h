@@ -12,9 +12,9 @@ typedef enum{
     STATE_INIT,
     STATE_DARKSLIDE,
     STATE_NODONGLE,
-//    STATE_DONGLE,
+    STATE_DONGLE,
     STATE_FLASHBAR,
-//    STATE_MULTI_EXP,
+    STATE_MULTI_EXP,
     STATE_N
 } camera_state;
 
@@ -23,8 +23,9 @@ void opensx70_run_state_machine (void);
 camera_state do_state_init(void);
 camera_state do_state_darkslide(void);
 camera_state do_state_noDongle(void);
-//camera_state do_state_dongle(void);
+camera_state do_state_dongle(void);
 camera_state do_state_flashBar(void);
-//camera_state do_state_multi_exp(void);
+camera_state do_state_multi_exp(void);
+camera_state return_state(peripheral_device *device);
 
 #endif

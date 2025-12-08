@@ -4,17 +4,17 @@ typedef camera_state (*camera_state_funct)(void);
 
 camera_state do_state_darkslide (void);
 camera_state do_state_noDongle (void);
-//camera_state do_state_dongle (void);
+camera_state do_state_dongle (void);
 camera_state do_state_flashBar (void);
-//camera_state do_state_multi_exp (void);
+camera_state do_state_multi_exp (void);
 
 static const camera_state_funct STATE_MACHINE [STATE_N] = {
     &do_state_init,
     &do_state_darkslide,
     &do_state_noDongle,
-//    &do_state_dongle,
+    &do_state_dongle,
     &do_state_flashBar,
-//    &do_state_multi_exp
+    &do_state_multi_exp
 };
 
 //Default state
@@ -56,3 +56,44 @@ camera_state do_state_flashBar (void){
     return STATE_FLASHBAR;
 }
 
+camera_state do_state_dongle (void){
+
+    //Stay in dongle until darkslide detected
+    return STATE_DONGLE;
+}
+
+camera_state do_state_multi_exp (void){
+
+    //Stay in multi exp until darkslide detected
+    return STATE_MULTI_EXP;
+}
+
+camera_state return_state(peripheral_device *device){
+    switch(device->type){
+        case PERIPHERAL_NONE:
+            #if STATEDEBUG
+                DEBUG_OUTPUT.println(F("TRANSITION TO STATE_NODONGLE"));
+            #endif
+            return STATE_NODONGLE;
+        case PERIPHERAL_DONGLE:
+            if(getSwitchStates(MEXP_MODE)){
+                multipleExposureMode = true;
+                mEXPFirstRun = true;
+                return STATE_MULTI_EXP;
+            }
+            #if STATEDEBUG
+                DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE"));
+            #endif
+            return STATE_DONGLE;
+        case PERIPHERAL_FLASHBAR:
+            #if STATEDEBUG
+                DEBUG_OUTPUT.println(F("TRANSITION TO STATE_FLASHBAR"));
+            #endif
+            return STATE_FLASHBAR;
+        default:
+            #if STATEDEBUG
+                DEBUG_OUTPUT.println(F("TRANSITION TO STATE_UNKNOWN"));
+            #endif
+            return STATE_NODONGLE;
+    }
+}
