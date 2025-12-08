@@ -47,8 +47,16 @@
 // Timeout constant for peripheral communication (5ms)
 #define PERIPHERAL_TIMEOUT_MS 5
 
+enum positions_t {POST = -100, POSB, AUTO600, AUTO100};//ANALOGUEWORKS AUTO 600BW
+
 extern const uint8_t POWER_DOWN_DELAY;
 extern const uint8_t Y_DELAY;
 extern const uint8_t METER_RESET_DELAY;
+extern const int32_t FD100;
+extern const int32_t FF100;
+extern const int32_t FD600;
+extern const int32_t FF600;
+extern const int32_t ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
+
 
 #endif
