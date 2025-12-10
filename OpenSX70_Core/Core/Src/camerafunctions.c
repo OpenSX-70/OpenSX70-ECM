@@ -1,5 +1,7 @@
 #include "camerafunctions.h"
 
+volatile bool auto_timeout_flag = false;
+
 void solenoid_init(void){
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
@@ -56,14 +58,26 @@ void darkslide_eject(){
     shutter_open();
 }
 
-void auto_exposure(meter_iso iso_setting){
+void begin_exposure(){
+    shutter_close();
+    HAL_Delay(40);
+    mirror_up();
+}
+
+void auto_exposure(meter_iso *iso_setting){
     HAL_Delay(Y_DELAY);
 
     meter_set_iso(iso_setting);
     integrator_reset();
-    auto_exposure_init(current_settings);
+    watchdog_config(&current_settings->auto_exposure_threshold);
+    
+    HAL_SuspendTick();
+    HAL_TIM_Base_Start_IT(&htim3);
+    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) || !auto_timeout_flag){
+        //Wait for watchdog to trigger or auto timeout
+    };
 }
 
-void auto_exposure_flashbar(meter_iso iso_setting){
+void auto_exposure_flashbar(meter_iso *iso_setting){
 
 }
