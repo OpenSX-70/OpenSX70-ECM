@@ -52,7 +52,7 @@
 #define METER_AUTO_WARNING 100 // If predicted ms is over this value, warning LED will shine in auto mode
 #define METER_PREDICTION_OFFSET 20 // in ms. This gets added to the prediction. At f8 I noticed all meter predictions were around 20ms off
 #define METER_SLOPE_HANDICAP 0 // Not used currently. Used to increase/decrease the slope of the prediction.
-//#define METER_RESET_DELAY 2 // Time required for light meter capacitor to fully reset
+#define METER_RESET_DELAY 2 // Time required for light meter capacitor to fully reset
 //---------------END METER SETTINGS----------------------------------------
 
 // Timeout constant for peripheral communication (5ms)
@@ -64,7 +64,6 @@ enum positions_t {POST = -100, POSB, AUTO600, AUTO100};//ANALOGUEWORKS AUTO 600B
 
 extern const uint8_t POWER_DOWN_DELAY;
 extern const uint8_t Y_DELAY;
-extern const uint8_t METER_RESET_DELAY;
 extern const int32_t ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
 
 
