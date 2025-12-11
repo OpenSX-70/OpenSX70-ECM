@@ -1,4 +1,6 @@
 #include "camerafunctions.h"
+#include "settings.h"
+#include "stm32g0xx_hal.h"
 
 volatile bool auto_timeout_flag = false;
 volatile bool multiple_exposure_flag = false;
@@ -85,6 +87,25 @@ void auto_exposure(meter_iso *iso_setting){
 
 void auto_exposure_flashbar(meter_iso *iso_setting){
 
+}
+
+void bulb_mode(){
+    HAL_Delay(Y_DELAY);
+    shutter_open();
+    while(!HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
+    //Fast flash function here
+    //HAL_Delay(Flash_Capture_Delay);
+    exposure_finish();
+}
+
+void time_mode(){
+    HAL_Delay(Y_DELAY);
+    shutter_open();
+    while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
+    while(!HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
+    //Fast flash function here
+    //HAL_Delay(Flash_Capture_Delay);
+    exposure_finish();
 }
 
 void exposure_finish(){
