@@ -9,6 +9,8 @@
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim3;
 extern volatile bool auto_timeout_flag;
+extern volatile bool fd_timeout_flag;
+extern volatile bool ff_timeout_flag;
 extern volatile bool multiple_exposure_flag;
 
 void solenoid_init(void);

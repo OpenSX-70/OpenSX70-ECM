@@ -1,8 +1,9 @@
 #include "camerafunctions.h"
-#include "settings.h"
-#include "stm32g0xx_hal.h"
+
 
 volatile bool auto_timeout_flag = false;
+volatile bool fd_timeout_flag = false;
+volatile bool ff_timeout_flag = false;
 volatile bool multiple_exposure_flag = false;
 
 void solenoid_init(void){
@@ -83,6 +84,7 @@ void auto_exposure(meter_iso *iso_setting){
     }
 
     exposure_finish();
+    HAL_TIM_Base_Stop_IT(&htim3);
 }
 
 void auto_exposure_flashbar(meter_iso *iso_setting){
