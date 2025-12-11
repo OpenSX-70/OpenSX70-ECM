@@ -1,6 +1,7 @@
 #include "camerafunctions.h"
 
 volatile bool auto_timeout_flag = false;
+volatile bool multiple_exposure_flag = false;
 
 void solenoid_init(void){
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
@@ -72,12 +73,34 @@ void auto_exposure(meter_iso *iso_setting){
     watchdog_config(&current_settings->auto_exposure_threshold);
     
     HAL_SuspendTick();
+    TIM3->CNT = 0;
     HAL_TIM_Base_Start_IT(&htim3);
+    shutter_open();
     while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) || !auto_timeout_flag){
         //Wait for watchdog to trigger or auto timeout
-    };
+    }
+
+    exposure_finish();
 }
 
 void auto_exposure_flashbar(meter_iso *iso_setting){
 
+}
+
+void exposure_finish(){
+    HAL_ResumeTick();
+    shutter_close();
+    HAL_Delay(30);
+
+    if(multiple_exposure_flag){
+        while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
+        return;
+    }
+    else{
+        HAL_Delay(100);
+        while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
+        mirror_down();
+        shutter_open();
+        HAL_Delay(100);
+    }
 }
