@@ -1,4 +1,5 @@
 #include "camerafunctions.h"
+#include <stdint.h>
 
 
 volatile bool auto_timeout_flag = false;
@@ -69,14 +70,17 @@ void begin_exposure(){
 }
 
 void auto_exposure(meter_iso *iso_setting){
-    HAL_Delay(Y_DELAY);
-
     meter_set_iso(iso_setting);
     integrator_reset();
     watchdog_config(&current_settings->auto_exposure_threshold);
+    auto_timeout_flag = false;
+    TIM3->CNT = 0;
+    
+    HAL_Delay(Y_DELAY);
+
     
     HAL_SuspendTick();
-    TIM3->CNT = 0;
+    
     HAL_TIM_Base_Start_IT(&htim3);
     shutter_open();
     while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) || !auto_timeout_flag){
