@@ -1,5 +1,6 @@
 #include "camerafunctions.h"
-#include <stdint.h>
+#include "main.h"
+#include "stm32g0xx_hal_gpio.h"
 
 
 volatile bool auto_timeout_flag = false;
@@ -70,18 +71,17 @@ void begin_exposure(){
 }
 
 void auto_exposure(meter_iso *iso_setting){
-    meter_set_iso(iso_setting);
-    integrator_reset();
-    watchdog_config(&current_settings->auto_exposure_threshold);
     auto_timeout_flag = false;
     TIM3->CNT = 0;
+
+    meter_set_iso(iso_setting);
+    watchdog_config(&current_settings->auto_exposure_threshold);
+    integrator_reset();
     
     HAL_Delay(Y_DELAY);
-
-    
     HAL_SuspendTick();
-    
     HAL_TIM_Base_Start_IT(&htim3);
+
     shutter_open();
     while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) || !auto_timeout_flag){
         //Wait for watchdog to trigger or auto timeout
@@ -92,7 +92,41 @@ void auto_exposure(meter_iso *iso_setting){
 }
 
 void auto_exposure_flashbar(meter_iso *iso_setting){
+    s2_ffa_mode();
+    fd_timeout_flag, ff_timeout_flag = false;
+    TIM16->CNT, TIM17->CNT = 0;
 
+    meter_set_iso(iso_setting);
+    watchdog_config(&current_settings->flash_delay_threshold);
+    integrator_reset();
+
+    sol2_engage();
+    HAL_Delay(Y_DELAY);
+    sol2_low_power();
+    HAL_SuspendTick();
+    HAL_TIM_Base_Start_IT(&htim16);
+
+    shutter_open();
+    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) || !fd_timeout_flag){
+        //Wait for watchdog to trigger or fd timeout
+    }
+    HAL_TIM_Base_Stop_IT(&htim16);
+    __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
+    
+    HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, GPIO_PIN_SET);
+
+    watchdog_config(&current_settings->flash_fire_threshold);
+    HAL_TIM_Base_Start_IT(&htim17);
+    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) || !ff_timeout_flag){
+        //Wait for watchdog to trigger or ff timeout
+    }
+    HAL_TIM_Base_Stop_IT(&htim17);
+    HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, GPIO_PIN_RESET);
+
+    sol2_disengage();
+    exposure_finish();
+    s2_usart_mode();
+    __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
 }
 
 void bulb_mode(){
@@ -130,4 +164,24 @@ void exposure_finish(){
         shutter_open();
         HAL_Delay(100);
     }
+}
+
+void s2_ffa_mode(){
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitStruct.Pin = S2_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(S2_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_WritePin(S2_GPIO_Port, S2_Pin, GPIO_PIN_RESET);
+}
+
+void s2_usart_mode(){
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitStruct.Pin = S2_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF1_USART2;
+    HAL_GPIO_Init(S2_GPIO_Port, &GPIO_InitStruct);
 }

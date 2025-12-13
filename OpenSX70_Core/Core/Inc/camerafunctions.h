@@ -8,6 +8,9 @@
 
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim16;
+extern TIM_HandleTypeDef htim17;
+
 extern volatile bool auto_timeout_flag;
 extern volatile bool fd_timeout_flag;
 extern volatile bool ff_timeout_flag;
@@ -29,4 +32,6 @@ void auto_exposure_flashbar(meter_iso *iso_setting);
 void bulb_mode(void);
 void time_mode(void);
 void exposure_finish(void);
+void s2_ffa_mode(void);
+void s2_usart_mode(void);
 #endif

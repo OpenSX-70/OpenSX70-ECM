@@ -70,7 +70,10 @@ camera_state do_state_noDongle (void){
 }
 
 camera_state do_state_flashBar (void){
-
+    if(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
+        begin_exposure();
+        auto_exposure_flashbar(&savedISO);
+    }
     return return_state(&current_dongle_state);
 }
 
