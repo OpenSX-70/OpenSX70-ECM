@@ -1,6 +1,4 @@
 #include "camerafunctions.h"
-#include "main.h"
-#include "stm32g0xx_hal_gpio.h"
 
 
 volatile bool auto_timeout_flag = false;
@@ -112,7 +110,7 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     }
     HAL_TIM_Base_Stop_IT(&htim16);
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
-    
+
     HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, GPIO_PIN_SET);
 
     watchdog_config(&current_settings->flash_fire_threshold);
