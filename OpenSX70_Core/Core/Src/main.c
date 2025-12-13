@@ -236,20 +236,8 @@ static void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
-
-  /** Configure the regular channel to be monitored by WatchDog 2 or 3
-  */
-  AnalogWDGConfig.WatchdogNumber = ADC_ANALOGWATCHDOG_2;
-  if (HAL_ADC_AnalogWDGConfig(&hadc1, &AnalogWDGConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
   /* USER CODE BEGIN ADC1_Init 2 */
-  AnalogWDGConfig.WatchdogNumber = ADC_ANALOGWATCHDOG_3;
-  if (HAL_ADC_AnalogWDGConfig(&hadc1, &AnalogWDGConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
+
   /* USER CODE END ADC1_Init 2 */
 
 }
@@ -581,16 +569,16 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : S5_Pin S1T_Pin S1F_Pin */
-  GPIO_InitStruct.Pin = S5_Pin|S1T_Pin|S1F_Pin;
+  /*Configure GPIO pin : S5_Pin */
+  GPIO_InitStruct.Pin = S5_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(S5_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : S3_Pin */
   GPIO_InitStruct.Pin = S3_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(S3_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : S9_Pin S8_Pin */
@@ -598,6 +586,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : S1T_Pin S1F_Pin */
+  GPIO_InitStruct.Pin = S1T_Pin|S1F_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LED2_Pin LED1_Pin */
   GPIO_InitStruct.Pin = LED2_Pin|LED1_Pin;
