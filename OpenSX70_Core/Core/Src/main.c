@@ -24,6 +24,7 @@
 #include "opensx70.h"
 #include "camerafunctions.h"
 #include "meter.h"
+#include "stm32g0xx_hal_adc.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -115,7 +116,7 @@ int main(void)
   MX_TIM16_Init();
   MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
-  
+  HAL_ADC_Start(&hadc1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -219,7 +220,7 @@ static void MX_ADC1_Init(void)
   AnalogWDGConfig.WatchdogNumber = ADC_ANALOGWATCHDOG_1;
   AnalogWDGConfig.WatchdogMode = ADC_ANALOGWATCHDOG_SINGLE_REG;
   AnalogWDGConfig.Channel = ADC_CHANNEL_3;
-  AnalogWDGConfig.ITMode = DISABLE;
+  AnalogWDGConfig.ITMode = ENABLE;
   AnalogWDGConfig.HighThreshold = 0;
   AnalogWDGConfig.LowThreshold = 0;
   if (HAL_ADC_AnalogWDGConfig(&hadc1, &AnalogWDGConfig) != HAL_OK)
@@ -398,7 +399,7 @@ static void MX_TIM16_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM16_Init 2 */
-
+  HAL_NVIC_EnableIRQ(TIM16_IRQn);
   /* USER CODE END TIM16_Init 2 */
 
 }
@@ -430,7 +431,7 @@ static void MX_TIM17_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM17_Init 2 */
-
+  HAL_NVIC_EnableIRQ(TIM17_IRQn);
   /* USER CODE END TIM17_Init 2 */
 
 }
