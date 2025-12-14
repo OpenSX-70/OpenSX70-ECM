@@ -27,9 +27,9 @@ void integrator_init(void){
 }
 
 void integrator_reset(void){
-    HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 1);
     HAL_Delay(METER_RESET_DELAY);
-    HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 0);
 }
 
 void meter_set_iso(meter_iso *iso_setting){
@@ -43,5 +43,4 @@ void meter_set_iso(meter_iso *iso_setting){
 void watchdog_config(uint32_t *threshold){
     MeterWDGConfig.HighThreshold = *threshold;
     HAL_ADC_AnalogWDGConfig(&hadc1, &MeterWDGConfig);
-    __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
 }
