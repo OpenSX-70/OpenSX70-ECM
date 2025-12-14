@@ -109,7 +109,7 @@ void auto_exposure(meter_iso *iso_setting){
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
     
     while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !auto_exposure_timeout_flag){
-
+        // Wait for either ADC integration or 15 second timeout
     }
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
     HAL_TIM_Base_Stop_IT(&htim3);
