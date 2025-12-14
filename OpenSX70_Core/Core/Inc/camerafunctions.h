@@ -11,7 +11,7 @@ extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim16;
 extern TIM_HandleTypeDef htim17;
 
-extern volatile bool auto_timeout_flag;
+extern volatile bool auto_exposure_timeout_flag;
 extern volatile bool fd_timeout_flag;
 extern volatile bool ff_timeout_flag;
 extern volatile bool multiple_exposure_flag;

@@ -5,6 +5,7 @@ volatile bool auto_timeout_flag = false;
 volatile bool fd_timeout_flag = false;
 volatile bool ff_timeout_flag = false;
 volatile bool multiple_exposure_flag = false;
+volatile bool auto_exposure_timeout_flag = false;
 
 void solenoid_init(void){
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
@@ -96,57 +97,26 @@ void auto_exposure(meter_iso *iso_setting){
     watchdog_config(&current_settings->auto_exposure_threshold);
     HAL_Delay(Y_DELAY);
     
-    //HAL_SuspendTick();
+    __HAL_TIM_SET_COUNTER(&htim3, 0);
+    __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE);
+    auto_exposure_timeout_flag = false;
+    HAL_TIM_Base_Start_IT(&htim3);
+    
     shutter_open();
     HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 0);
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
-    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1)){
+    
+    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !auto_exposure_timeout_flag){
 
     }
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
+    HAL_TIM_Base_Stop_IT(&htim3);
 
     exposure_finish();
 }
 
 void auto_exposure_flashbar(meter_iso *iso_setting){
-    s2_ffa_mode();
-    fd_timeout_flag = false;
-    ff_timeout_flag = false;
-    TIM16->CNT = 0;
-    TIM17->CNT = 0;
-    __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
 
-    meter_set_iso(iso_setting);
-    watchdog_config(&current_settings->flash_delay_threshold);
-    integrator_reset();
-
-    sol2_engage();
-    HAL_Delay(Y_DELAY);
-    sol2_low_power();
-    HAL_SuspendTick();
-    HAL_TIM_Base_Start_IT(&htim16);
-
-    shutter_open();
-    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) || !fd_timeout_flag){
-        //Wait for watchdog to trigger or fd timeout
-    }
-    HAL_TIM_Base_Stop_IT(&htim16);
-    __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
-
-    HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, GPIO_PIN_SET);
-
-    watchdog_config(&current_settings->flash_fire_threshold);
-    HAL_TIM_Base_Start_IT(&htim17);
-    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) || !ff_timeout_flag){
-        //Wait for watchdog to trigger or ff timeout
-    }
-    HAL_TIM_Base_Stop_IT(&htim17);
-    HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, GPIO_PIN_RESET);
-
-    sol2_disengage();
-    exposure_finish();
-    s2_usart_mode();
-    __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
 }
 
 void manual_exposure(uint8_t selector_value){
