@@ -93,13 +93,15 @@ void begin_exposure(){
 void auto_exposure(meter_iso *iso_setting){
     HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 1);
 
-    meter_set_iso(iso_setting);
-    watchdog_config(&current_settings->auto_exposure_threshold);
-    HAL_Delay(Y_DELAY);
-    
     __HAL_TIM_SET_COUNTER(&htim3, 0);
     __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE);
     auto_exposure_timeout_flag = false;
+
+    meter_set_iso(iso_setting);
+    watchdog_config(&current_settings->auto_exposure_threshold);
+
+    HAL_Delay(Y_DELAY);
+    
     HAL_TIM_Base_Start_IT(&htim3);
     
     shutter_open();
