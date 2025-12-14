@@ -24,6 +24,7 @@ static const camera_state_funct STATE_MACHINE [STATE_N] = {
 camera_state state = STATE_INIT;
 
 void opensx70_run_state_machine (void){
+    sonar_focus();
     state = STATE_MACHINE[state]();
 }
 
@@ -32,7 +33,8 @@ camera_state do_state_init (void){
     solenoid_init();
     integrator_init();
     initializePeripheralDevice(&current_dongle_state);
-    if(HAL_GPIO_ReadPin(S5_GPIO_Port, S5_Pin) != GPIO_PIN_RESET){
+    __HAL_ADC_DISABLE_IT(&hadc1, ADC_IT_AWD1);
+    if(HAL_GPIO_ReadPin(S5_GPIO_Port, S5_Pin)){
         shutter_close();
         mirror_down();
         shutter_open();
@@ -46,8 +48,8 @@ camera_state do_state_darkslide (void){
     #if SHUTTERDARKSLIDE
     if (HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
     #endif
-        if ((HAL_GPIO_ReadPin(S8_GPIO_Port, S8_Pin) == GPIO_PIN_SET) && (HAL_GPIO_ReadPin(S9_GPIO_Port, S9_Pin) == GPIO_PIN_RESET)){
-            darkslide_eject();        
+        if (HAL_GPIO_ReadPin(S8_GPIO_Port, S8_Pin) && !HAL_GPIO_ReadPin(S9_GPIO_Port, S9_Pin)){
+            darkslide_eject();
         }
 
     #if SHUTTERDARKSLIDE
@@ -61,7 +63,6 @@ camera_state do_state_darkslide (void){
 }
 
 camera_state do_state_noDongle (void){
-    
     if(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
         begin_exposure();
         auto_exposure(&savedISO);
@@ -84,6 +85,7 @@ camera_state do_state_dongle (void){
 
 camera_state do_state_multi_exp (void){
 
+    return return_state(&current_dongle_state);
 }
 
 camera_state return_state(peripheral_device *device){
