@@ -4,7 +4,7 @@
 
 
 //      Feature toggles
-#define SHUTTERDARKSLIDE 1       //1 Enables feature to not eject dark slide until shutter button is pressed
+#define SHUTTERDARKSLIDE 0       //1 Enables feature to not eject dark slide until shutter button is pressed
 #define TIMER_MIRROR_UP 1        //1 Enables mirror up feature for self timer modes
 #define EIGHT_SHOT_PACK 1        //1 Makes all counter-based functions work based on an 8 shot pack rather than 10
 #define LIGHMETER_HELPER 1       //1 Enables viewfinder light meter helper
@@ -31,7 +31,7 @@
 
 //---------------MAGIC NUMBERS---------------------------------------------
 #define A100 1023
-#define A600 255
+#define A600 1020
 #define FD100 200
 #define FF100 260
 #define FD600 40
@@ -58,6 +58,8 @@
 // Timeout constant for peripheral communication (5ms)
 #define PERIPHERAL_TIMEOUT_MS 5
 #define PERIPHERAL_RESPONSE_TIMEOUT_TICKS 1000  // Assuming ~1ms per state machine tick, 1 second timeout
+
+#define DEBOUNCE_DELAY 5  // Debounce delay in ms for GPIO reads
 
 
 enum positions_t {POST = -100, POSB, AUTO600, AUTO100};//ANALOGUEWORKS AUTO 600BW

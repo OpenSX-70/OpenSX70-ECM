@@ -24,6 +24,7 @@ void sol2_disengage(void);
 void sol2_low_power(void);
 void mirror_down(void);
 void mirror_up(void);
+void sonar_focus(void);
 void darkslide_eject(void);
 void begin_exposure(void);
 void auto_exposure(meter_iso *iso_setting);

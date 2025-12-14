@@ -34,25 +34,46 @@ void sol2_low_power(){
 }
 
 void mirror_down(){
-    HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, 1);
 
-    while(HAL_GPIO_ReadPin(S5_GPIO_Port, S5_Pin) != GPIO_PIN_RESET){
-        //Wait for S5 to go low
+    uint8_t stable = 0;
+    while(stable < DEBOUNCE_DELAY){
+        if(HAL_GPIO_ReadPin(S5_GPIO_Port, S5_Pin) == 0){
+            stable++;
+        } else {
+            stable = 0;
+        }
+        HAL_Delay(1);
     }
 
-    HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, 0);
 }
 
 void mirror_up(){
-    if(HAL_GPIO_ReadPin(S3_GPIO_Port, S3_Pin) != GPIO_PIN_SET){
-        HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, GPIO_PIN_SET);
+    if(HAL_GPIO_ReadPin(S3_GPIO_Port, S3_Pin) == 0){
+        HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, 1);
     }
 
-    while(HAL_GPIO_ReadPin(S5_GPIO_Port, S5_Pin) != GPIO_PIN_SET){
-        //Wait for S5 to go high
+    uint8_t stable = 0;
+    while(stable < DEBOUNCE_DELAY){
+        if(HAL_GPIO_ReadPin(S5_GPIO_Port, S5_Pin) == 1){
+            stable++;
+        } else {
+            stable = 0;
+        }
+        HAL_Delay(1);
     }
 
-    HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, 0);
+}
+
+void sonar_focus(){
+    if(HAL_GPIO_ReadPin(S1F_GPIO_Port, S1F_Pin)){
+        HAL_GPIO_WritePin(S1F_FBW_GPIO_Port, S1F_FBW_Pin, GPIO_PIN_SET);
+    }
+    else{
+        HAL_GPIO_WritePin(S1F_FBW_GPIO_Port, S1F_FBW_Pin, GPIO_PIN_RESET);
+    }
 }
 
 void darkslide_eject(){
@@ -69,30 +90,31 @@ void begin_exposure(){
 }
 
 void auto_exposure(meter_iso *iso_setting){
-    auto_timeout_flag = false;
-    TIM3->CNT = 0;
+    HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 1);
 
     meter_set_iso(iso_setting);
     watchdog_config(&current_settings->auto_exposure_threshold);
-    integrator_reset();
-    
     HAL_Delay(Y_DELAY);
-    HAL_SuspendTick();
-    HAL_TIM_Base_Start_IT(&htim3);
-
+    
+    //HAL_SuspendTick();
     shutter_open();
-    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) || !auto_timeout_flag){
-        //Wait for watchdog to trigger or auto timeout
+    HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 0);
+    __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
+    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1)){
+
     }
+    __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
 
     exposure_finish();
-    HAL_TIM_Base_Stop_IT(&htim3);
 }
 
 void auto_exposure_flashbar(meter_iso *iso_setting){
     s2_ffa_mode();
-    fd_timeout_flag, ff_timeout_flag = false;
-    TIM16->CNT, TIM17->CNT = 0;
+    fd_timeout_flag = false;
+    ff_timeout_flag = false;
+    TIM16->CNT = 0;
+    TIM17->CNT = 0;
+    __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
 
     meter_set_iso(iso_setting);
     watchdog_config(&current_settings->flash_delay_threshold);
@@ -125,6 +147,15 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     exposure_finish();
     s2_usart_mode();
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
+}
+
+void manual_exposure(uint8_t selector_value){
+    HAL_Delay(Y_DELAY);
+
+    if(selector_value >= Dongle_Flash_Limit){
+        uint32_t delay_time = (selector_value - Flash_Capture_Delay);
+        HAL_Delay(delay_time);
+    }
 }
 
 void bulb_mode(){
