@@ -1,11 +1,13 @@
 #MicroXplorer Configuration settings - do not modify
+ADC1.AWD1HighThreshold=4095
 ADC1.AWD1ITMode=ENABLE
 ADC1.Channel-0\#ChannelRegularConversion=ADC_CHANNEL_3
 ADC1.ContinuousConvMode=ENABLE
 ADC1.EnableAnalogWatchDog1=true
 ADC1.EnableAnalogWatchDog2=false
 ADC1.EnableAnalogWatchDog3=false
-ADC1.IPParameters=Rank-0\#ChannelRegularConversion,master,Channel-0\#ChannelRegularConversion,SelectedChannel,SamplingTime-0\#ChannelRegularConversion,NbrOfConversionFlag,ContinuousConvMode,EnableAnalogWatchDog1,EnableAnalogWatchDog2,EnableAnalogWatchDog3,AWD1ITMode
+ADC1.IPParameters=Rank-0\#ChannelRegularConversion,master,Channel-0\#ChannelRegularConversion,SelectedChannel,SamplingTime-0\#ChannelRegularConversion,NbrOfConversionFlag,ContinuousConvMode,EnableAnalogWatchDog1,EnableAnalogWatchDog2,EnableAnalogWatchDog3,AWD1ITMode,AWD1HighThreshold,NbrOfConversion
+ADC1.NbrOfConversion=1
 ADC1.NbrOfConversionFlag=1
 ADC1.Rank-0\#ChannelRegularConversion=1
 ADC1.SamplingTime-0\#ChannelRegularConversion=ADC_SAMPLINGTIME_COMMON_1
@@ -126,8 +128,9 @@ PA3.GPIO_Label=LM
 PA3.Locked=true
 PA3.Mode=IN3
 PA3.Signal=ADC1_IN3
-PA4.GPIOParameters=GPIO_Label
+PA4.GPIOParameters=GPIO_Speed,GPIO_Label
 PA4.GPIO_Label=LM_RESET
+PA4.GPIO_Speed=GPIO_SPEED_FREQ_VERY_HIGH
 PA4.Locked=true
 PA4.Signal=GPIO_Output
 PA5.GPIOParameters=GPIO_Label

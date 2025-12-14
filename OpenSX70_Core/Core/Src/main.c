@@ -24,7 +24,6 @@
 #include "opensx70.h"
 #include "camerafunctions.h"
 #include "meter.h"
-#include "stm32g0xx_hal_adc.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -220,8 +219,8 @@ static void MX_ADC1_Init(void)
   AnalogWDGConfig.WatchdogNumber = ADC_ANALOGWATCHDOG_1;
   AnalogWDGConfig.WatchdogMode = ADC_ANALOGWATCHDOG_SINGLE_REG;
   AnalogWDGConfig.Channel = ADC_CHANNEL_3;
-  AnalogWDGConfig.ITMode = ENABLE;
-  AnalogWDGConfig.HighThreshold = 0;
+  AnalogWDGConfig.ITMode = DISABLE;
+  AnalogWDGConfig.HighThreshold = 4095;
   AnalogWDGConfig.LowThreshold = 0;
   if (HAL_ADC_AnalogWDGConfig(&hadc1, &AnalogWDGConfig) != HAL_OK)
   {
@@ -238,7 +237,7 @@ static void MX_ADC1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN ADC1_Init 2 */
-
+  
   /* USER CODE END ADC1_Init 2 */
 
 }
@@ -561,10 +560,15 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LED2_Pin|LED1_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : LM_RESET_Pin FF_PIN_Pin FFA_POWER_EN_Pin MOTOR_Pin
-                           S1F_FBW_Pin */
-  GPIO_InitStruct.Pin = LM_RESET_Pin|FF_PIN_Pin|FFA_POWER_EN_Pin|MOTOR_Pin
-                          |S1F_FBW_Pin;
+  /*Configure GPIO pin : LM_RESET_Pin */
+  GPIO_InitStruct.Pin = LM_RESET_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  HAL_GPIO_Init(LM_RESET_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : FF_PIN_Pin FFA_POWER_EN_Pin MOTOR_Pin S1F_FBW_Pin */
+  GPIO_InitStruct.Pin = FF_PIN_Pin|FFA_POWER_EN_Pin|MOTOR_Pin|S1F_FBW_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
