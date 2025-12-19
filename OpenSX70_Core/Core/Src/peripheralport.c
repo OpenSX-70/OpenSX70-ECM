@@ -20,11 +20,11 @@ static const peripheral_state_funct PERIPHERAL_MACHINE[DONGLE_STATE_N] = {
 
 peripheral_state port_state = DONGLE_STATE_NODONGLE;
 
-void updatePeripheralStatus(peripheral_device *device){
+void update_peripheral_status(peripheral_device *device){
     port_state = PERIPHERAL_MACHINE[port_state](device);
 }
 
-void initializePeripheralDevice(peripheral_device *device){
+void initialize_peripheral_device(peripheral_device *device){
     device->selector = 200;
     device->switch1 = false;
     device->switch2 = false;
@@ -33,7 +33,7 @@ void initializePeripheralDevice(peripheral_device *device){
 
 peripheral_state do_dongle_state_noDongle(peripheral_device *device){
     if(HAL_GPIO_ReadPin(S2_GPIO_Port, S2_Pin) == GPIO_PIN_RESET){
-        setPeripheralDevice(device, 100, false, false, PERIPHERAL_FLASHBAR);
+        set_peripheral_device(device, 100, false, false, PERIPHERAL_FLASHBAR);
         return DONGLE_STATE_FLASHBAR;
     }
 
@@ -44,7 +44,7 @@ peripheral_state do_dongle_state_noDongle(peripheral_device *device){
 
 peripheral_state do_dongle_state_flashBar(peripheral_device *device){
     if(HAL_GPIO_ReadPin(S2_GPIO_Port, S2_Pin) != GPIO_PIN_RESET){
-        initializePeripheralDevice(device);
+        initialize_peripheral_device(device);
         return DONGLE_STATE_NODONGLE;
     }
 
@@ -62,7 +62,7 @@ peripheral_state do_dongle_state_dongle(peripheral_device *device){
             dma_started = true;
             timeout_counter = 0;
         } else {
-            initializePeripheralDevice(device);
+            initialize_peripheral_device(device);
             dma_started = false;
             return DONGLE_STATE_NODONGLE;
         }
@@ -77,7 +77,7 @@ peripheral_state do_dongle_state_dongle(peripheral_device *device){
 
     timeout_counter++;
     if (timeout_counter > PERIPHERAL_RESPONSE_TIMEOUT_TICKS) {
-        initializePeripheralDevice(device);
+        initialize_peripheral_device(device);
         dma_started = false;
         timeout_counter = 0;
         dongle_response_received = false;
@@ -87,7 +87,7 @@ peripheral_state do_dongle_state_dongle(peripheral_device *device){
     return DONGLE_STATE_DONGLE;
 }
 
-void setPeripheralDevice(peripheral_device *device, uint8_t selector, bool switch1, bool switch2, peripheral_type type) {
+void set_peripheral_device(peripheral_device *device, uint8_t selector, bool switch1, bool switch2, peripheral_type type) {
     device->selector = selector;
     device->switch1 = switch1;
     device->switch2 = switch2;
@@ -124,7 +124,7 @@ bool get_switch_state(uint8_t switch_number){
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART2) {
-        setPeripheralDevice(&current_dongle_state, (peripheral_uart_buffer[0] & selector_mask), (peripheral_uart_buffer[0] & switch1_mask), (peripheral_uart_buffer[0] & switch2_mask), PERIPHERAL_DONGLE);
+        set_peripheral_device(&current_dongle_state, (peripheral_uart_buffer[0] & selector_mask), (peripheral_uart_buffer[0] & switch1_mask), (peripheral_uart_buffer[0] & switch2_mask), PERIPHERAL_DONGLE);
         dongle_response_received = true;
     }
 }

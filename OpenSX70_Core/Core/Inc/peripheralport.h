@@ -47,9 +47,9 @@ typedef struct peripheral_device {
     peripheral_type type;
 } peripheral_device;
 
-void initializePeripheralDevice(peripheral_device *device);
-void setPeripheralDevice(peripheral_device *device, uint8_t selector, bool switch1, bool switch2, peripheral_type type);
-void updatePeripheralStatus(peripheral_device *device);
+void initialize_peripheral_device(peripheral_device *device);
+void set_peripheral_device(peripheral_device *device, uint8_t selector, bool switch1, bool switch2, peripheral_type type);
+void update_peripheral_status(peripheral_device *device);
 void send_command(uint8_t command);
 bool get_dongle_settings(peripheral_device *device);
 bool get_switch_state(uint8_t switch_number);

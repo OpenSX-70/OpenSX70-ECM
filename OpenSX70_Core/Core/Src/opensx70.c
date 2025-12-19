@@ -24,15 +24,17 @@ static const camera_state_funct STATE_MACHINE [STATE_N] = {
 camera_state state = STATE_INIT;
 
 void opensx70_run_state_machine (void){
+    
     sonar_focus();
     state = STATE_MACHINE[state]();
+    update_peripheral_status(&current_dongle_state);
 }
 
 camera_state do_state_init (void){
     savedISO = read_iso();
     solenoid_init();
     integrator_init();
-    initializePeripheralDevice(&current_dongle_state);
+    initialize_peripheral_device(&current_dongle_state);
     __HAL_ADC_DISABLE_IT(&hadc1, ADC_IT_AWD1);
     if(HAL_GPIO_ReadPin(S5_GPIO_Port, S5_Pin)){
         shutter_close();
