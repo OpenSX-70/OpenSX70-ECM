@@ -1,8 +1,4 @@
 #include "camerafunctions.h"
-#include "main.h"
-#include "meter.h"
-#include "stm32g0xx_hal.h"
-#include "stm32g0xx_hal_gpio.h"
 
 
 volatile bool auto_timeout_flag = false;
@@ -176,16 +172,26 @@ void manual_exposure(uint8_t selector_value){
 
     if(selector_value >= Dongle_Flash_Limit){
         uint32_t delay_time = (selector_value - Flash_Capture_Delay);
+        shutter_open();
+        HAL_Delay(delay_time);
+        flash();
+        HAL_Delay(Flash_Capture_Delay);
+    }
+    else{
+        uint32_t delay_time = selector_value;
+        shutter_open();
         HAL_Delay(delay_time);
     }
+
+    exposure_finish();
 }
 
 void bulb_mode(){
     HAL_Delay(Y_DELAY);
     shutter_open();
     while(!HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
-    //Fast flash function here
-    //HAL_Delay(Flash_Capture_Delay);
+    flash();
+    HAL_Delay(Flash_Capture_Delay);
     exposure_finish();
 }
 
@@ -194,8 +200,8 @@ void time_mode(){
     shutter_open();
     while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
     while(!HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
-    //Fast flash function here
-    //HAL_Delay(Flash_Capture_Delay);
+    flash();
+    HAL_Delay(Flash_Capture_Delay);
     exposure_finish();
 }
 
@@ -204,6 +210,7 @@ void exposure_finish(){
     shutter_close();
     HAL_Delay(30);
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 1);
+    s2_usart_mode();
     if(multiple_exposure_flag){
         while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
         return;
@@ -217,6 +224,14 @@ void exposure_finish(){
     }
 }
 
+void flash(){
+    HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
+    s2_ffa_mode();
+    HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 1);
+    HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 0);
+    // Reset happens in exposure finish
+}
+
 void s2_ffa_mode(){
     GPIO_InitTypeDef GPIO_InitStruct = {0};
     GPIO_InitStruct.Pin = S2_Pin;
@@ -224,7 +239,7 @@ void s2_ffa_mode(){
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(S2_GPIO_Port, &GPIO_InitStruct);
-    HAL_GPIO_WritePin(S2_GPIO_Port, S2_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(S2_GPIO_Port, S2_Pin, 0);
 }
 
 void s2_usart_mode(){

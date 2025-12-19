@@ -33,6 +33,7 @@ void auto_exposure_flashbar(meter_iso *iso_setting);
 void bulb_mode(void);
 void time_mode(void);
 void exposure_finish(void);
+void flash(void);
 void s2_ffa_mode(void);
 void s2_usart_mode(void);
 #endif
