@@ -34,8 +34,8 @@
 #define A600 1020
 #define FD100 200
 #define FF100 260
-#define FD600 40
-#define FF600 52
+#define FD600 340
+#define FF600 442
 //---------------END MAGIC NUMBERS-----------------------------------------
 
 //---------------Flashbar and Dongle Flash---------------------------------

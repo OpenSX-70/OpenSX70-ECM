@@ -146,7 +146,7 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     shutter_open();
     HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 0);
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
-    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) || !fd_timeout_flag){
+    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !fd_timeout_flag){
         //Wait for watchdog to trigger or fd timeout
     }
     HAL_TIM_Base_Stop_IT(&htim16);
@@ -157,11 +157,13 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     watchdog_config(&current_settings->flash_fire_threshold);
     HAL_TIM_Base_Start_IT(&htim17);
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
-    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) || !ff_timeout_flag){
+    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !ff_timeout_flag){
         //Wait for watchdog to trigger or ff timeout
     }
     HAL_TIM_Base_Stop_IT(&htim17);
-    HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
+    HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 0);
+    
 
     sol2_disengage();
     exposure_finish();
@@ -201,7 +203,7 @@ void exposure_finish(){
     HAL_ResumeTick();
     shutter_close();
     HAL_Delay(30);
-
+    HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 1);
     if(multiple_exposure_flag){
         while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
         return;
