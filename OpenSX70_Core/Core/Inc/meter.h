@@ -12,6 +12,12 @@ typedef enum {
     ISO_125
 } meter_iso;
 
+typedef enum {
+    OFF,
+    LOW_LIGHT,
+    MANUAL_METER
+} light_meter_helper;
+
 struct meter_settings{
     meter_iso iso_setting;
     uint32_t flash_delay_threshold;
