@@ -1,4 +1,7 @@
 #include "opensx70.h"
+#include "camerafunctions.h"
+#include "peripheralport.h"
+#include "settings.h"
 
 meter_iso savedISO;
 volatile bool isoBlinked = false;
@@ -82,12 +85,20 @@ camera_state do_state_flashBar (void){
 }
 
 camera_state do_state_dongle (void){
+    // Light meter helper functions here
+
+    if(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
+        if(get_switch_state(SELF_TIMER)){
+            // Self timer function
+        }
+        begin_exposure();
+        dongle_functions();
+    }
 
     return return_state(&current_dongle_state);
 }
 
 camera_state do_state_multi_exp (void){
-
     return return_state(&current_dongle_state);
 }
 
