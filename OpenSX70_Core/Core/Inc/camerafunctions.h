@@ -29,7 +29,7 @@ void darkslide_eject(void);
 void begin_exposure(void);
 void auto_exposure(meter_iso *iso_setting);
 void auto_exposure_flashbar(meter_iso *iso_setting);
-//void manual_exposure(uint8_t selector_value);
+void manual_exposure(uint8_t selector_value);
 void bulb_mode(void);
 void time_mode(void);
 void exposure_finish(void);

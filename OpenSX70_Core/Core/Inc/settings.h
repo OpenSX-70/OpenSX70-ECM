@@ -62,7 +62,7 @@
 #define DEBOUNCE_DELAY 5  // Debounce delay in ms for GPIO reads
 
 
-enum positions_t {POST = -100, POSB, AUTO600, AUTO100};//ANALOGUEWORKS AUTO 600BW
+enum positions_t {POST = -100, POSB, AUTO, AUTO_F};
 
 extern const uint8_t POWER_DOWN_DELAY;
 extern const uint8_t Y_DELAY;

@@ -8,6 +8,7 @@
 extern TIM_HandleTypeDef htim1;
 extern ADC_HandleTypeDef hadc1;
 
+
 typedef enum{
     STATE_INIT,
     STATE_DARKSLIDE,
@@ -27,6 +28,7 @@ camera_state do_state_dongle(void);
 camera_state do_state_flashBar(void);
 camera_state do_state_multi_exp(void);
 camera_state return_state(peripheral_device *device);
+void dongle_functions(void);
 void ISOBlink(meter_iso *savedISO);
 void save_iso(meter_iso iso);
 meter_iso read_iso(void);

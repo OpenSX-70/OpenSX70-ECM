@@ -3,6 +3,7 @@
 meter_iso savedISO;
 volatile bool isoBlinked = false;
 
+
 typedef camera_state (*camera_state_funct)(void);
 
 camera_state do_state_darkslide (void);
@@ -105,6 +106,32 @@ camera_state return_state(peripheral_device *device){
             return STATE_FLASHBAR;
         default:
             return STATE_NODONGLE;
+    }
+}
+
+void dongle_functions(void){
+    // Led off function here
+    if(current_dongle_state.selector < 12){
+        manual_exposure(current_dongle_state.selector);
+    }
+    else if(ShutterSpeed[current_dongle_state.selector] == POST){
+        time_mode();
+    }
+    else if(ShutterSpeed[current_dongle_state.selector] == POSB){
+        bulb_mode();
+    }
+    else{
+        switch(ShutterSpeed[current_dongle_state.selector]){
+            case AUTO:
+                auto_exposure(&savedISO);
+                break;
+            case AUTO_F:
+                auto_exposure_flashbar(&savedISO);
+                break;
+            default:
+                auto_exposure(&savedISO);
+                break;
+        }
     }
 }
 

@@ -24,7 +24,6 @@
 #define PERIPHERAL_SELF_TIMER_CMD 0xF6
 
 
-//extern HardwareSerial DEBUG_OUTPUT;
 
 typedef enum {
     PERIPHERAL_NONE = 0,
