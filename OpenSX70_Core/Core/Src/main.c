@@ -24,6 +24,7 @@
 #include "opensx70.h"
 #include "camerafunctions.h"
 #include "meter.h"
+#include "pollers.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -650,6 +651,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if (htim->Instance == TIM3){
     HAL_TIM_Base_Stop_IT(&htim3);
     auto_exposure_timeout_flag = 1;
+  }
+  else if (htim->Instance == TIM14){
+    poll();
   }
   else if (htim->Instance == TIM16){
     HAL_TIM_Base_Stop_IT(&htim16);

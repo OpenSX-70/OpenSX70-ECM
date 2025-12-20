@@ -5,7 +5,6 @@
 #include "camerafunctions.h"
 #include "peripheralport.h"
 
-extern TIM_HandleTypeDef htim1;
 extern ADC_HandleTypeDef hadc1;
 
 

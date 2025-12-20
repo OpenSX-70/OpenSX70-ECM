@@ -6,10 +6,11 @@
 #include "settings.h"
 #include "stm32g0xx_hal_tim.h"
 
-extern TIM_HandleTypeDef htim1;
-extern TIM_HandleTypeDef htim3;
-extern TIM_HandleTypeDef htim16;
-extern TIM_HandleTypeDef htim17;
+extern TIM_HandleTypeDef htim1;  // Solenoid PWM
+extern TIM_HandleTypeDef htim3;  // Auto exposure timeout. Maybe self timer after reconfig as well?
+extern TIM_HandleTypeDef htim14; // Polling timer
+extern TIM_HandleTypeDef htim16; // FD timeout timer
+extern TIM_HandleTypeDef htim17; // FF timeout timer
 
 extern volatile bool auto_exposure_timeout_flag;
 extern volatile bool fd_timeout_flag;

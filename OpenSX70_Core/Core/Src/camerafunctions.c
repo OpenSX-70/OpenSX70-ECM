@@ -85,6 +85,7 @@ void darkslide_eject(){
 }
 
 void begin_exposure(){
+    HAL_TIM_Base_Stop_IT(&htim14); // Stop poller interrupts during exposure
     shutter_close();
     HAL_Delay(40);
     mirror_up();
@@ -222,6 +223,7 @@ void exposure_finish(){
         shutter_open();
         HAL_Delay(100);
     }
+    HAL_TIM_Base_Start_IT(&htim14); // Resume polling after exposure finished.
 }
 
 void flash(){
