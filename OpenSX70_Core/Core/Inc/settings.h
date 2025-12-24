@@ -19,7 +19,8 @@
 // #define {whatever} 0  : No switch assigned. 
 // DO NOT ASSIGN MULTIPLE THINGS TO THE SAME VALUE (except 0).
 // DOING SO WILL BREAK THINGS. YOU CANNOT HAVE MULTIPLE FUNCTIONS ASSIGNED TO THE SAME SWITCH.
-// When I have a configurator style dongle set up I will be doing validation on that side.
+// When I have a configuration style dongle set up I will be doing validation on that side.
+// Configuration dongle may be difficult due to how flash writing works on the stm32. Have to erase and write a whole flash page.
 // Until then, YOU will need to validate that you are not overloading a switch.
 
 #define MEXP_MODE 0
