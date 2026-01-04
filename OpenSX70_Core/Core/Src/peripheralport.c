@@ -48,8 +48,6 @@ peripheral_state do_dongle_state_flashBar(peripheral_device *device){
         return DONGLE_STATE_NODONGLE;
     }
 
-    send_command(PERIPHERAL_PING_CMD);
-
     return DONGLE_STATE_FLASHBAR;
 }
 
@@ -71,6 +69,7 @@ void send_command(uint8_t command){
     HAL_HalfDuplex_EnableReceiver(&huart2);
 }
 
+/*
 bool get_dongle_settings(peripheral_device *device){
     send_command(PERIPHERAL_READ_CMD);
 
@@ -81,6 +80,7 @@ bool get_dongle_settings(peripheral_device *device){
         return false;
     }
 }
+*/
 
 bool get_switch_state(uint8_t switch_number){
     switch (switch_number){
@@ -93,9 +93,11 @@ bool get_switch_state(uint8_t switch_number){
     }
 }
 
+/*
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART2) {
         set_peripheral_device(&current_dongle_state, (peripheral_uart_buffer[0] & selector_mask), (peripheral_uart_buffer[0] & switch1_mask), (peripheral_uart_buffer[0] & switch2_mask), PERIPHERAL_DONGLE);
         dongle_response_received = true;
     }
 }
+*/
