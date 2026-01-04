@@ -54,35 +54,6 @@ peripheral_state do_dongle_state_flashBar(peripheral_device *device){
 }
 
 peripheral_state do_dongle_state_dongle(peripheral_device *device){
-    static bool dma_started = false;
-    static uint32_t timeout_counter = 0;
-
-    if (!dma_started) {
-        if (get_dongle_settings(device)) {
-            dma_started = true;
-            timeout_counter = 0;
-        } else {
-            initialize_peripheral_device(device);
-            dma_started = false;
-            return DONGLE_STATE_NODONGLE;
-        }
-    }
-
-    if (dongle_response_received) {
-        dongle_response_received = false;
-        dma_started = false;
-        timeout_counter = 0;
-        return DONGLE_STATE_DONGLE;
-    }
-
-    timeout_counter++;
-    if (timeout_counter > PERIPHERAL_RESPONSE_TIMEOUT_TICKS) {
-        initialize_peripheral_device(device);
-        dma_started = false;
-        timeout_counter = 0;
-        dongle_response_received = false;
-        return DONGLE_STATE_NODONGLE;
-    }
 
     return DONGLE_STATE_DONGLE;
 }
