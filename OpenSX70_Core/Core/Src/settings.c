@@ -13,4 +13,4 @@ const uint8_t POWER_DOWN_DELAY = 15;
 // FF (Flash Fired) value is the value the meter must hit before the shutter closes. This also has a timeout but is a much shorter 12ms (Flash_Capture_Max_Time).
 // I am hard coding these values as the magic number is no longer changing per board.
 
-const int32_t ShutterSpeed[] = {     23,   27,   32,    34,  39,   44,  56,   64,    125,  250, 500, 1000, POST, POSB, ISO_640, ISO_125 };
+const int32_t ShutterSpeed[] = {     23,   27,   32,    34,  39,   44,  56,   64,    125,  250, 500, 1000, POST, POSB, AUTO, AUTO_F};
