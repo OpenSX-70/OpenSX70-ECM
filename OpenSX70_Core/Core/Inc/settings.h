@@ -31,10 +31,10 @@
 //----------------END DONGLE SWITCH FEATURE SELECTION---------------------
 
 //---------------MAGIC NUMBERS---------------------------------------------
-#define A100 1023
+#define A100 4093 //less than max value as watchdog requires exceeding value to trigger
 #define A600 1020
-#define FD100 200
-#define FF100 260
+#define FD100 1365
+#define FF100 1820
 #define FD600 340
 #define FF600 442
 //---------------END MAGIC NUMBERS-----------------------------------------
