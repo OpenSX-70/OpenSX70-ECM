@@ -47,21 +47,25 @@ camera_state do_state_init (void){
 }
 
 camera_state do_state_darkslide (void){
-    #if SHUTTERDARKSLIDE
-    if (HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
-    #endif
-        if (HAL_GPIO_ReadPin(S8_GPIO_Port, S8_Pin) && !HAL_GPIO_ReadPin(S9_GPIO_Port, S9_Pin)){
+    camera_state next_state = STATE_DARKSLIDE;
+    if (HAL_GPIO_ReadPin(S8_GPIO_Port, S8_Pin) && !HAL_GPIO_ReadPin(S9_GPIO_Port, S9_Pin)){
+        #if SHUTTERDARKSLIDE
+        if (HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
+        #endif
             darkslide_eject();
+        #if SHUTTERDARKSLIDE
         }
-
-    #if SHUTTERDARKSLIDE
+        #endif
+        return next_state;
     }
-    #endif
+    else{
+        next_state = return_state(&current_dongle_state);
+    }
+
     if(!isoBlinked){
         ISOBlink(&savedISO);
-    }
-
-    return return_state(&current_dongle_state);
+    } 
+    return next_state;
 }
 
 camera_state do_state_noDongle (void){
