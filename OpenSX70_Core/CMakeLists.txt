@@ -46,6 +46,12 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     Core/Src/main.c
+    Core/Src/opensx70.c
+    Core/Src/camerafunctions.c
+    Core/Src/settings.c
+    Core/Src/meter.c
+    Core/Src/peripheralport.c
+    Core/Src/pollers.c
 )
 
 # Add include paths
