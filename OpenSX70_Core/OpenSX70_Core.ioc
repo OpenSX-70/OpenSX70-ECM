@@ -79,6 +79,7 @@ NVIC.TIM14_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
 NVIC.TIM16_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
 NVIC.TIM17_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
 NVIC.TIM3_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
+NVIC.USART2_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
 PA10.GPIOParameters=GPIO_Label
 PA10.GPIO_Label=MOTOR
 PA10.Locked=true

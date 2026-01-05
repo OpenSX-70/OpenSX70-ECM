@@ -54,6 +54,9 @@ bool get_dongle_settings(peripheral_device *device);
 bool get_switch_state(uint8_t switch_number);
 
 extern peripheral_device current_dongle_state;
+extern volatile bool dongle_response_received;
+extern volatile bool waiting_for_ping_response;
+extern uint8_t peripheral_uart_buffer[1];
 extern UART_HandleTypeDef huart2;
 
 #endif

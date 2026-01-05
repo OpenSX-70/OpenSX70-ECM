@@ -3,6 +3,7 @@
 peripheral_device current_dongle_state;
 uint8_t peripheral_uart_buffer[1];
 volatile bool dongle_response_received = false;
+volatile bool waiting_for_ping_response = false;
 
 static uint8_t selector_mask = 0b00001111, switch1_mask = 0b00010000, switch2_mask = 0b00100000;
 
@@ -37,6 +38,24 @@ peripheral_state do_dongle_state_noDongle(peripheral_device *device){
         return DONGLE_STATE_FLASHBAR;
     }
 
+    if(dongle_response_received){
+        dongle_response_received = false;
+        waiting_for_ping_response = false;
+        if(peripheral_uart_buffer[0] == PERIPHERAL_ACK){
+            set_peripheral_device(device, 0, false, false, PERIPHERAL_DONGLE);
+            return DONGLE_STATE_DONGLE;
+        }
+    }
+
+    if(waiting_for_ping_response){
+        HAL_UART_AbortReceive(&huart2);
+        waiting_for_ping_response = false;
+    }
+
+    send_command(PERIPHERAL_PING_CMD);
+    waiting_for_ping_response = true;
+    HAL_UART_Receive_IT(&huart2, peripheral_uart_buffer, 1);
+
     return DONGLE_STATE_NODONGLE;
 }
 
@@ -50,6 +69,23 @@ peripheral_state do_dongle_state_flashBar(peripheral_device *device){
 }
 
 peripheral_state do_dongle_state_dongle(peripheral_device *device){
+    if(dongle_response_received){
+        dongle_response_received = false;
+        waiting_for_ping_response = false;
+        set_peripheral_device(device, peripheral_uart_buffer[0] & selector_mask,(peripheral_uart_buffer[0] & switch1_mask),(peripheral_uart_buffer[0] & switch2_mask), PERIPHERAL_DONGLE);
+        return DONGLE_STATE_DONGLE;
+    }
+
+    if(waiting_for_ping_response){
+        HAL_UART_AbortReceive(&huart2);
+        waiting_for_ping_response = false;
+        initialize_peripheral_device(device);
+        return DONGLE_STATE_NODONGLE;
+    }
+
+    send_command(PERIPHERAL_READ_CMD);
+    waiting_for_ping_response = true;
+    HAL_UART_Receive_IT(&huart2, peripheral_uart_buffer, 1);
 
     return DONGLE_STATE_DONGLE;
 }
@@ -86,5 +122,11 @@ bool get_switch_state(uint8_t switch_number){
             return current_dongle_state.switch2;
         default:
             return false;
+    }
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+    if(huart->Instance == USART2){
+        dongle_response_received = true;
     }
 }
