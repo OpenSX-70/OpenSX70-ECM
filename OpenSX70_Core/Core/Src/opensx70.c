@@ -25,8 +25,8 @@ static const camera_state_funct STATE_MACHINE [STATE_N] = {
 camera_state state = STATE_INIT;
 
 void opensx70_run_state_machine (void){
-    sonar_focus();
     state = STATE_MACHINE[state]();
+    sonar_focus();
 }
 
 camera_state do_state_init (void){
