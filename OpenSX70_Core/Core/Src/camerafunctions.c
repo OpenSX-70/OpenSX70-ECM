@@ -172,14 +172,14 @@ void manual_exposure(uint8_t selector_value){
     HAL_Delay(Y_DELAY);
 
     if(selector_value >= Dongle_Flash_Limit){
-        uint32_t delay_time = (selector_value - Flash_Capture_Delay);
+        uint32_t delay_time = (ShutterSpeed[selector_value] - Flash_Capture_Delay);
         shutter_open();
         HAL_Delay(delay_time);
         flash();
         HAL_Delay(Flash_Capture_Delay);
     }
     else{
-        uint32_t delay_time = selector_value;
+        uint32_t delay_time = ShutterSpeed[selector_value];
         shutter_open();
         HAL_Delay(delay_time);
     }
@@ -190,7 +190,7 @@ void manual_exposure(uint8_t selector_value){
 void bulb_mode(){
     HAL_Delay(Y_DELAY);
     shutter_open();
-    while(!HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
+    while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
     flash();
     HAL_Delay(Flash_Capture_Delay);
     exposure_finish();
