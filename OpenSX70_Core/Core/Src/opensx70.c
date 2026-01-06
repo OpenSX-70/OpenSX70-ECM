@@ -114,14 +114,13 @@ camera_state do_state_multi_exp (void){
             dongle_functions();
         }
         else if(!mexpSwitchStatus && !multiple_exposure_first_run){
-            multiple_exposure_first_run = true;
             multiple_exposure_flag = false;
             exposure_finish();
+            return STATE_DONGLE;
         }
     }
 
     if(!mexpSwitchStatus && multiple_exposure_first_run){
-        multiple_exposure_first_run = true;
         multiple_exposure_flag = false;
         return STATE_DONGLE;
     }
@@ -135,8 +134,8 @@ camera_state return_state(peripheral_device *device){
             return STATE_NODONGLE;
         case PERIPHERAL_DONGLE:
             if(get_switch_state(MEXP_MODE)){
-                //multipleExposureMode = true;
-                //mEXPFirstRun = true;
+                multiple_exposure_flag = true;
+                multiple_exposure_first_run = true;
                 return STATE_MULTI_EXP;
             }
             return STATE_DONGLE;
