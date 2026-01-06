@@ -184,7 +184,7 @@ void manual_exposure(uint8_t selector_value){
         shutter_open();
         HAL_Delay(delay_time);
     }
-    
+
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
     exposure_finish();
 }

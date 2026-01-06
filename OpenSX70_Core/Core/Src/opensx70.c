@@ -1,8 +1,9 @@
 #include "opensx70.h"
 
 meter_iso savedISO;
-volatile bool isoBlinked = false;
 
+volatile bool isoBlinked = false;
+bool multiple_exposure_first_run = true;
 
 typedef camera_state (*camera_state_funct)(void);
 
@@ -99,7 +100,33 @@ camera_state do_state_dongle (void){
 }
 
 camera_state do_state_multi_exp (void){
-    return return_state(&current_dongle_state);
+    bool mexpSwitchStatus = get_switch_state(MEXP_MODE);
+
+    if(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
+        if(mexpSwitchStatus){
+            if(get_switch_state(SELF_TIMER)){
+                // Self timer function
+            }
+            if(multiple_exposure_first_run){
+                multiple_exposure_first_run = false;
+                begin_exposure();
+            }
+            dongle_functions();
+        }
+        else if(!mexpSwitchStatus && !multiple_exposure_first_run){
+            multiple_exposure_first_run = true;
+            multiple_exposure_flag = false;
+            exposure_finish();
+        }
+    }
+
+    if(!mexpSwitchStatus && multiple_exposure_first_run){
+        multiple_exposure_first_run = true;
+        multiple_exposure_flag = false;
+        return STATE_DONGLE;
+    }
+
+    return STATE_MULTI_EXP;
 }
 
 camera_state return_state(peripheral_device *device){
