@@ -173,6 +173,7 @@ void manual_exposure(uint8_t selector_value){
 
     if(selector_value >= Dongle_Flash_Limit){
         uint32_t delay_time = (ShutterSpeed[selector_value] - Flash_Capture_Delay);
+        HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
         shutter_open();
         HAL_Delay(delay_time);
         flash();
@@ -184,11 +185,13 @@ void manual_exposure(uint8_t selector_value){
         HAL_Delay(delay_time);
     }
 
+    HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
     exposure_finish();
 }
 
 void bulb_mode(){
     HAL_Delay(Y_DELAY);
+    HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
     shutter_open();
     while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
     flash();
@@ -198,6 +201,7 @@ void bulb_mode(){
 
 void time_mode(){
     HAL_Delay(Y_DELAY);
+    HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
     shutter_open();
     while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
     while(!HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
@@ -214,6 +218,7 @@ void exposure_finish(){
     s2_usart_mode();
     if(multiple_exposure_flag){
         while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
+        HAL_TIM_Base_Start_IT(&htim14);
         return;
     }
     else{
@@ -227,7 +232,7 @@ void exposure_finish(){
 }
 
 void flash(){
-    HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
+    HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 1);
     s2_ffa_mode();
     HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 1);
     HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 0);
