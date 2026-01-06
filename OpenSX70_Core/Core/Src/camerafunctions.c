@@ -218,6 +218,7 @@ void exposure_finish(){
     s2_usart_mode();
     if(multiple_exposure_flag){
         while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
+        HAL_TIM_Base_Start_IT(&htim14);
         return;
     }
     else{
