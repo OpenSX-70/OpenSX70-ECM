@@ -34,7 +34,6 @@ void manual_exposure(uint8_t selector_value);
 void bulb_mode(void);
 void time_mode(void);
 void exposure_finish(void);
-//void multiple_exposure_finish();
 void flash(void);
 void s2_ffa_mode(void);
 void s2_usart_mode(void);
