@@ -90,7 +90,7 @@ camera_state do_state_dongle (void){
 
     if(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
         if(get_switch_state(SELF_TIMER)){
-            // Self timer function
+            self_timer();
         }
         begin_exposure();
         dongle_functions();
@@ -105,7 +105,7 @@ camera_state do_state_multi_exp (void){
     if(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
         if(mexpSwitchStatus){
             if(get_switch_state(SELF_TIMER)){
-                // Self timer function
+                self_timer();
             }
             if(multiple_exposure_first_run){
                 multiple_exposure_first_run = false;
@@ -170,6 +170,18 @@ void dongle_functions(void){
                 break;
         }
     }
+}
+
+void self_timer(void){
+    HAL_GPIO_WritePin(S1F_FBW_GPIO_Port, S1F_FBW_Pin, GPIO_PIN_RESET);
+    send_command(PERIPHERAL_SELF_TIMER_CMD);
+    HAL_Delay(4000);
+    shutter_close();
+    HAL_Delay(2000);
+    mirror_up();
+    HAL_Delay(1000);
+    HAL_GPIO_WritePin(S1F_FBW_GPIO_Port, S1F_FBW_Pin, GPIO_PIN_SET);
+    HAL_Delay(3000);
 }
 
 void ISOBlink(meter_iso *savedISO){

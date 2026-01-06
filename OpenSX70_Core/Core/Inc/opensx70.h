@@ -28,6 +28,7 @@ camera_state do_state_flashBar(void);
 camera_state do_state_multi_exp(void);
 camera_state return_state(peripheral_device *device);
 void dongle_functions(void);
+void self_timer(void);
 void ISOBlink(meter_iso *savedISO);
 void save_iso(meter_iso iso);
 meter_iso read_iso(void);
