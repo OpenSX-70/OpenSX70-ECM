@@ -23,6 +23,21 @@ poller_state do_state_poll_dongle(){
 }
 
 poller_state do_state_poll_meter(){
-
+    if(!LIGHMETER_HELPER){
+        return STATE_POLL_DONGLE;
+    }
+    switch(current_dongle_state.peripheral_type){
+        case PERIPHERAL_NONE:
+            approximate_exposure_time(LOW_LIGHT);
+            break;
+        case PERIPHERAL_DONGLE:
+            approximate_exposure_time(METER_HELPER);
+            break;
+        case PERIPHERAL_FLASHBAR:
+            // Flashbar does not need meter polling
+            break;
+        default:
+            break;
+    }
     return STATE_POLL_DONGLE;
 }
