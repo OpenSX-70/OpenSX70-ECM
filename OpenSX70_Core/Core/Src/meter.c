@@ -1,4 +1,5 @@
 #include "meter.h"
+#include "math.h"
 
 struct meter_settings *current_settings;
 struct meter_settings settings_640;
@@ -65,7 +66,9 @@ void watchdog_config(uint32_t *threshold){
     HAL_ADC_AnalogWDGConfig(&hadc1, &MeterWDGConfig);
 }
 
-void aproximate_exposure_time(void){
+void approximate_exposure_time(light_meter_helper lm_helper){
+    static uint32_t predicted_us = 9999; 
+    
     if(!integration_started){
         htim3.Init.Prescaler = 15;
         htim3.Init.Period = 65535;
@@ -77,8 +80,32 @@ void aproximate_exposure_time(void){
         __HAL_TIM_SET_COUNTER(&htim3, 0);
         __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE);
 
+        MeterWDGConfig.HighThreshold = METER_POLLING_THRESHOLD;
+        MeterWDGConfig.ITMode = ENABLE;
+        HAL_ADC_AnalogWDGConfig(&hadc1, &MeterWDGConfig);
+
+        HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 0);
         HAL_TIM_Base_Start_IT(&htim3);
         integration_started = true;
     }
+    else{
+        if((tim3_overflow_count == METER_OVERFLOW_THRESHOLD) || poller_exposure_complete){
+
+            HAL_TIM_Base_Stop_IT(&htim3);
+            uint32_t us_elapsed = __HAL_TIM_GET_COUNTER(&htim3) + (METER_OVERFLOW_THRESHOLD * 65535);
+
+            float slope = METER_POLLING_THRESHOLD / (float)us_elapsed; // Convert to seconds
+            
+            if(slope == 0){
+                predicted_us = 9999;
+            }
+            else{
+                predicted_us = ceil((float)current_settings->auto_exposure_threshold / (float)slope); 
+            }
+            integration_started = false;
+        }
+    }
+
+
 }
 

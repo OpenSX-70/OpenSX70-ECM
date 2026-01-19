@@ -32,7 +32,7 @@ void integrator_init(meter_iso *iso_setting);
 void integrator_reset(void);
 void meter_set_iso(meter_iso *iso_setting);
 void watchdog_config(uint32_t *threshold);
-void aproximate_exposure_time(void);
+void approximate_exposure_time(light_meter_helper lm_helper);
 
 extern struct meter_settings settings_640;
 extern struct meter_settings settings_125;
