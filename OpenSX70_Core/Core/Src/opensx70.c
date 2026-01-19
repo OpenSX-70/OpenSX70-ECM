@@ -37,6 +37,7 @@ camera_state do_state_init (void){
     initialize_peripheral_device(&current_dongle_state);
     HAL_TIM_Base_Start_IT(&htim14);
     __HAL_ADC_DISABLE_IT(&hadc1, ADC_IT_AWD1);
+    HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 1);
     if(HAL_GPIO_ReadPin(S5_GPIO_Port, S5_Pin)){
         shutter_close();
         mirror_down();
