@@ -6,6 +6,7 @@ volatile bool fd_timeout_flag = false;
 volatile bool ff_timeout_flag = false;
 volatile bool multiple_exposure_flag = false;
 volatile bool auto_exposure_timeout_flag = false;
+volatile bool auto_exposure_active = false;
 
 void solenoid_init(void){
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
@@ -85,13 +86,22 @@ void darkslide_eject(){
 }
 
 void begin_exposure(){
+    __HAL_ADC_DISABLE_IT(&hadc1, ADC_IT_AWD1);
     HAL_TIM_Base_Stop_IT(&htim14); // Stop poller interrupts during exposure
+    HAL_TIM_Base_Stop_IT(&htim3);
     shutter_close();
     HAL_Delay(40);
     mirror_up();
 }
 
 void auto_exposure(meter_iso *iso_setting){
+    // Set timer 3 to 15 seconds for auto exposure timeout
+    htim3.Init.Prescaler = 3663;
+    htim3.Init.Period = 65501;
+    if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+    {
+        Error_Handler();
+    }
     HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 1);
     __HAL_TIM_SET_COUNTER(&htim3, 0);
     __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE);

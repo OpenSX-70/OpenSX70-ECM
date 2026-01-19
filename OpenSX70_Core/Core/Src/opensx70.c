@@ -33,7 +33,7 @@ void opensx70_run_state_machine (void){
 camera_state do_state_init (void){
     savedISO = read_iso();
     solenoid_init();
-    integrator_init();
+    integrator_init(&savedISO);
     initialize_peripheral_device(&current_dongle_state);
     HAL_TIM_Base_Start_IT(&htim14);
     __HAL_ADC_DISABLE_IT(&hadc1, ADC_IT_AWD1);

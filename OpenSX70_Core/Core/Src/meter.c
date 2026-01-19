@@ -3,27 +3,43 @@
 struct meter_settings *current_settings;
 struct meter_settings settings_640;
 struct meter_settings settings_125;
+struct meter_settings settings_polling;
+volatile bool poller_exposure_complete = false;
+volatile bool integration_started = false;
+volatile uint32_t tim3_overflow_count = 0;
 
 ADC_AnalogWDGConfTypeDef MeterWDGConfig;
 
-void integrator_init(void){
-    settings_640.iso_setting = ISO_640;
+void integrator_init(meter_iso *iso_setting){
     settings_640.flash_delay_threshold = FD600;
     settings_640.flash_fire_threshold = FF600;
     settings_640.auto_exposure_threshold = A600;
 
-    settings_125.iso_setting = ISO_125;
     settings_125.flash_delay_threshold = FD100;
     settings_125.flash_fire_threshold = FF100;
     settings_125.auto_exposure_threshold = A100;
 
-    // Using the same base config for watchdog. 2 and 3 are both 8 bit so we will just reconfigure awd1
-    MeterWDGConfig.WatchdogNumber = ADC_ANALOGWATCHDOG_1;
+    settings_polling.flash_delay_threshold = 0;
+    settings_polling.flash_fire_threshold = 0;
+    settings_polling.auto_exposure_threshold = 4000;
+
     MeterWDGConfig.LowThreshold = 0;
-    MeterWDGConfig.HighThreshold = 0;
     MeterWDGConfig.Channel = ADC_CHANNEL_3;
     MeterWDGConfig.WatchdogMode = ADC_ANALOGWATCHDOG_SINGLE_REG;
     MeterWDGConfig.ITMode = DISABLE;
+
+    switch(*iso_setting){
+        case ISO_640:
+            current_settings = &settings_640;
+            break;
+        case ISO_125:
+            current_settings = &settings_125;
+            break;
+    }
+    
+    MeterWDGConfig.WatchdogNumber = ADC_ANALOGWATCHDOG_1;
+    MeterWDGConfig.HighThreshold = current_settings->auto_exposure_threshold;
+    HAL_ADC_AnalogWDGConfig(&hadc1, &MeterWDGConfig);
 }
 
 void integrator_reset(void){
@@ -33,14 +49,36 @@ void integrator_reset(void){
 }
 
 void meter_set_iso(meter_iso *iso_setting){
-    if(*iso_setting == ISO_640){
-        current_settings = &settings_640;
-    } else if(*iso_setting == ISO_125){
-        current_settings = &settings_125;
+    switch(*iso_setting){
+        case ISO_640:
+            current_settings = &settings_640;
+            break;
+        case ISO_125:
+            current_settings = &settings_125;
+            break;
     }
 }
 
 void watchdog_config(uint32_t *threshold){
     MeterWDGConfig.HighThreshold = *threshold;
+    MeterWDGConfig.ITMode = DISABLE;
     HAL_ADC_AnalogWDGConfig(&hadc1, &MeterWDGConfig);
 }
+
+void aproximate_exposure_time(void){
+    if(!integration_started){
+        htim3.Init.Prescaler = 15;
+        htim3.Init.Period = 65535;
+        if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+        {
+            Error_Handler();
+        }
+        tim3_overflow_count = 0;
+        __HAL_TIM_SET_COUNTER(&htim3, 0);
+        __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE);
+
+        HAL_TIM_Base_Start_IT(&htim3);
+        integration_started = true;
+    }
+}
+

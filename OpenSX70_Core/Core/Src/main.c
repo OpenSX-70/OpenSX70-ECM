@@ -629,8 +629,8 @@ static void MX_GPIO_Init(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if (htim->Instance == TIM3){
-    HAL_TIM_Base_Stop_IT(&htim3);
     auto_exposure_timeout_flag = 1;
+    tim3_overflow_count++;
   }
   else if (htim->Instance == TIM14){
     poll();
@@ -642,6 +642,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   else if (htim->Instance == TIM17){
     HAL_TIM_Base_Stop_IT(&htim17);
     ff_timeout_flag = 1;
+  }
+}
+
+void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef *hadc)
+{
+  if (hadc->Instance == ADC1)
+  {
+    HAL_TIM_Base_Stop_IT(&htim3);
+    poller_exposure_complete = true;
   }
 }
 /* USER CODE END 4 */
