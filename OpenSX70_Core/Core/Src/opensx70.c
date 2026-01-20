@@ -33,17 +33,19 @@ void opensx70_run_state_machine (void){
 camera_state do_state_init (void){
     savedISO = read_iso();
     solenoid_init();
-    integrator_init();
+    integrator_init(&savedISO);
     initialize_peripheral_device(&current_dongle_state);
     HAL_TIM_Base_Start_IT(&htim14);
     __HAL_ADC_DISABLE_IT(&hadc1, ADC_IT_AWD1);
+    HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 1);
     if(HAL_GPIO_ReadPin(S5_GPIO_Port, S5_Pin)){
         shutter_close();
         mirror_down();
         shutter_open();
     }
-
     s1_iso_swap();
+    HAL_Delay(200);
+    init_complete = true;
     return STATE_DARKSLIDE;
 }
 
@@ -71,6 +73,9 @@ camera_state do_state_darkslide (void){
 
 camera_state do_state_noDongle (void){
     if(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
+        HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
+
         begin_exposure();
         auto_exposure(&savedISO);
     }
@@ -133,6 +138,7 @@ camera_state return_state(peripheral_device *device){
         case PERIPHERAL_NONE:
             return STATE_NODONGLE;
         case PERIPHERAL_DONGLE:
+
             if(get_switch_state(MEXP_MODE)){
                 multiple_exposure_flag = true;
                 multiple_exposure_first_run = true;

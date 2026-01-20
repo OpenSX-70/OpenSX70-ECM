@@ -45,12 +45,12 @@
 //---------------End Flash settings----------------------------------------
 
 //---------------METER SETTINGS--------------------------------------------
-#define AUTO_TIMEOUT 15000 //Sets the maximum time an auto exposure can take place. Required due to new meter design.
-#define METER_INTERVAL 100 // Sets how long each meter measurement sample is taken in ms
 #define METER_AUTO_WARNING 100 // If predicted ms is over this value, warning LED will shine in auto mode
 #define METER_PREDICTION_OFFSET 20 // in ms. This gets added to the prediction. At f8 I noticed all meter predictions were around 20ms off
 #define METER_SLOPE_HANDICAP 0 // Not used currently. Used to increase/decrease the slope of the prediction.
 #define METER_RESET_DELAY 2 // Time required for light meter capacitor to fully reset
+#define METER_POLLING_THRESHOLD 4000 
+#define METER_OVERFLOW_THRESHOLD 2
 //---------------END METER SETTINGS----------------------------------------
 
 // Timeout constant for peripheral communication (5ms)
