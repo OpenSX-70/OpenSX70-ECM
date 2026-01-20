@@ -13,7 +13,7 @@ static const poller_state_funct POLLER_MACHINE [STATE_POLL_N] = {
     &do_state_poll_meter
 };
 
-bool init_complete = false;
+volatile bool init_complete = false;
 poller_state poller = STATE_POLL_WAIT;
 
 void poll(){
@@ -41,10 +41,10 @@ poller_state do_state_poll_meter(){
             approximate_exposure_time(LOW_LIGHT);
             break;
         case PERIPHERAL_DONGLE:
-            approximate_exposure_time(MANUAL_METER);
+            approximate_exposure_time(OFF);
             break;
         case PERIPHERAL_FLASHBAR:
-            // Flashbar does not need meter polling
+            approximate_exposure_time(OFF);
             break;
         default:
             break;

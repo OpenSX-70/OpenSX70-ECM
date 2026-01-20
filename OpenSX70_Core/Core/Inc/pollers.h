@@ -4,7 +4,7 @@
 #include "peripheralport.h"
 #include "meter.h"
 
-extern bool init_complete;
+extern volatile bool init_complete;
 
 typedef enum poller_state{
     STATE_POLL_WAIT,

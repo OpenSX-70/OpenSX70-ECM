@@ -67,6 +67,12 @@ void watchdog_config(uint32_t *threshold){
 
 void approximate_exposure_time(light_meter_helper lm_helper){
     //static uint32_t predicted_us; 
+
+    if(lm_helper == OFF){
+        HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
+        return;
+    }
     
     if(!integration_started){
         htim3.Init.Prescaler = 15;
@@ -89,12 +95,14 @@ void approximate_exposure_time(light_meter_helper lm_helper){
         if(tim3_overflow_count >= METER_OVERFLOW_THRESHOLD){
             HAL_TIM_Base_Stop_IT(&htim3);
             HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
             integration_started = false;
             HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 1);
         }
         else if(__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1)){
             HAL_TIM_Base_Stop_IT(&htim3);
             HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+            HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
             integration_started = false;
             HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 1);
         }
