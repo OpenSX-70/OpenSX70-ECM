@@ -35,7 +35,6 @@ camera_state do_state_init (void){
     solenoid_init();
     integrator_init(&savedISO);
     initialize_peripheral_device(&current_dongle_state);
-    HAL_TIM_Base_Start_IT(&htim14);
     __HAL_ADC_DISABLE_IT(&hadc1, ADC_IT_AWD1);
     HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 1);
     if(HAL_GPIO_ReadPin(S5_GPIO_Port, S5_Pin)){
@@ -43,8 +42,10 @@ camera_state do_state_init (void){
         mirror_down();
         shutter_open();
     }
-
     s1_iso_swap();
+    HAL_TIM_Base_Start_IT(&htim14);
+    HAL_Delay(200);
+    init_complete = true;
     return STATE_DARKSLIDE;
 }
 

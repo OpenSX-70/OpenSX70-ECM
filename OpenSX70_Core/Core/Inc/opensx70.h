@@ -4,6 +4,7 @@
 #include "main.h"
 #include "camerafunctions.h"
 #include "peripheralport.h"
+#include "pollers.h"
 
 extern ADC_HandleTypeDef hadc1;
 

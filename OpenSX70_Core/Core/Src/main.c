@@ -647,11 +647,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef *hadc)
 {
-  if (hadc->Instance == ADC1)
-  {
-    HAL_TIM_Base_Stop_IT(&htim3);
-    poller_exposure_complete = true;
-  }
+  adc_value = HAL_ADC_GetValue(&hadc1);
+  HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_SET);
+  HAL_TIM_Base_Stop_IT(&htim3);
+  poller_exposure_complete = true;
+
 }
 /* USER CODE END 4 */
 
