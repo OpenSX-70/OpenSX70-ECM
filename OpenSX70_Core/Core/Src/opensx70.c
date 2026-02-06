@@ -77,7 +77,8 @@ camera_state do_state_noDongle (void){
         HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
 
         begin_exposure();
-        auto_exposure(&savedISO);
+        time_mode();
+        //auto_exposure(&savedISO);
     }
     return return_state(&current_dongle_state);
 }
