@@ -80,6 +80,7 @@ void sonar_focus(){
 
 void darkslide_eject(){
     shutter_close();
+    HAL_Delay(Y_DELAY);
     mirror_up();
     mirror_down();
     shutter_open();
