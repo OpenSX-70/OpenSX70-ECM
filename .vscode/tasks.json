@@ -6,13 +6,12 @@
 			"label": "CMake: Configure Debug",
 			"command": "cmake",
 			"args": [
-				"-DCMAKE_BUILD_TYPE=Debug",
-				"-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/OpenSX70_Core/cmake/gcc-arm-none-eabi.cmake",
-				"-S",
-				"${workspaceFolder}/OpenSX70_Core",
-				"-B",
-				"${workspaceFolder}/build/Debug"
+				"--preset",
+				"Debug"
 			],
+			"options": {
+				"cwd": "${workspaceFolder}/OpenSX70_Core"
+			},
 			"problemMatcher": [],
 			"detail": "Configure CMake project"
 		},
@@ -22,10 +21,12 @@
 			"command": "cmake",
 			"args": [
 				"--build",
-				"${workspaceFolder}/build/Debug",
-				"--config",
+				"--preset",
 				"Debug"
 			],
+			"options": {
+				"cwd": "${workspaceFolder}/OpenSX70_Core"
+			},
 			"group": {
 				"kind": "build",
 				"isDefault": true
@@ -35,7 +36,7 @@
 			],
 			"detail": "Build the CMake project",
 			"dependsOn": [
-				"CMake: Configure"
+				"CMake: Configure Debug"
 			]
 		},
 		{
@@ -43,13 +44,12 @@
 			"label": "CMake: Configure Release",
 			"command": "cmake",
 			"args": [
-				"-DCMAKE_BUILD_TYPE=Release",
-				"-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/OpenSX70_Core/cmake/gcc-arm-none-eabi.cmake",
-				"-S",
-				"${workspaceFolder}/OpenSX70_Core",
-				"-B",
-				"${workspaceFolder}/build/Release"
+				"--preset",
+				"Release"
 			],
+			"options": {
+				"cwd": "${workspaceFolder}/OpenSX70_Core"
+			},
 			"problemMatcher": [],
 			"detail": "Configure CMake project for Release"
 		},
@@ -59,10 +59,12 @@
 			"command": "cmake",
 			"args": [
 				"--build",
-				"${workspaceFolder}/build/Release",
-				"--config",
+				"--preset",
 				"Release"
 			],
+			"options": {
+				"cwd": "${workspaceFolder}/OpenSX70_Core"
+			},
 			"group": "build",
 			"problemMatcher": [
 				"$gcc"
@@ -75,10 +77,12 @@
 		{
 			"type": "shell",
 			"label": "CMake: Clean",
-			"command": "rm",
+			"command": "cmake",
 			"args": [
+				"-E",
+				"rm",
 				"-rf",
-				"${workspaceFolder}/build"
+				"${workspaceFolder}/OpenSX70_Core/build"
 			],
 			"problemMatcher": [],
 			"detail": "Clean build directory"

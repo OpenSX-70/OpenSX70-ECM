@@ -80,6 +80,7 @@ void sonar_focus(){
 
 void darkslide_eject(){
     shutter_close();
+    HAL_Delay(Y_DELAY);
     mirror_up();
     mirror_down();
     shutter_open();
@@ -157,13 +158,15 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
         //Wait for watchdog to trigger or fd timeout
     }
     HAL_TIM_Base_Stop_IT(&htim16);
+    watchdog_config(&current_settings->flash_fire_threshold);
+    __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
 
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 1);
     HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 1);
 
-    watchdog_config(&current_settings->flash_fire_threshold);
+    
     HAL_TIM_Base_Start_IT(&htim17);
-    __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
+    
     while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !ff_timeout_flag){
         //Wait for watchdog to trigger or ff timeout
     }
@@ -188,6 +191,7 @@ void manual_exposure(uint8_t selector_value){
         HAL_Delay(delay_time);
         flash();
         HAL_Delay(Flash_Capture_Delay);
+        HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 0);
     }
     else{
         uint32_t delay_time = ShutterSpeed[selector_value];
@@ -206,6 +210,7 @@ void bulb_mode(){
     while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
     flash();
     HAL_Delay(Flash_Capture_Delay);
+    HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 0);
     exposure_finish();
 }
 
@@ -217,6 +222,7 @@ void time_mode(){
     while(!HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
     flash();
     HAL_Delay(Flash_Capture_Delay);
+    HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 0);
     exposure_finish();
 }
 
@@ -245,7 +251,6 @@ void flash(){
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 1);
     s2_ffa_mode();
     HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 1);
-    HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 0);
     // Reset happens in exposure finish
 }
 

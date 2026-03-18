@@ -56,6 +56,7 @@ camera_state do_state_darkslide (void){
         if (HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
         #endif
             darkslide_eject();
+            next_state = return_state(&current_dongle_state);
         #if SHUTTERDARKSLIDE
         }
         #endif
