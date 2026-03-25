@@ -43,3 +43,5 @@ Thumbs.db
 
 # Workspace-wide metadata (in parent folder)
 ../.metadata/
+
+compile_commands.json
