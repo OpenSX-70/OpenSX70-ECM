@@ -62,7 +62,10 @@ void meter_set_iso(meter_iso *iso_setting){
 void watchdog_config(uint32_t *threshold){
     MeterWDGConfig.HighThreshold = *threshold;
     MeterWDGConfig.ITMode = DISABLE;
-    HAL_ADC_AnalogWDGConfig(&hadc1, &MeterWDGConfig);
+    if (HAL_ADC_AnalogWDGConfig(&hadc1, &MeterWDGConfig) != HAL_OK) {
+        // Retry once for transient HAL busy/error states.
+        HAL_ADC_AnalogWDGConfig(&hadc1, &MeterWDGConfig);
+    }
 }
 
 void approximate_exposure_time(light_meter_helper lm_helper){

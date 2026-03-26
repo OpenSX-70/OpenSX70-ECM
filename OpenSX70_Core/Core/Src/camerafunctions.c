@@ -150,32 +150,45 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     sol2_low_power();
     HAL_SuspendTick();
 
-    HAL_TIM_Base_Start_IT(&htim16);
+    HAL_StatusTypeDef tim16_status = HAL_TIM_Base_Start_IT(&htim16);
+    if (tim16_status != HAL_OK) {
+        tim16_status = HAL_TIM_Base_Start_IT(&htim16);
+    }
+
     shutter_open();
     HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 0);
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
     while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !fd_timeout_flag){
         //Wait for watchdog to trigger or fd timeout
     }
+
     HAL_TIM_Base_Stop_IT(&htim16);
+
+    HAL_StatusTypeDef tim17_status = HAL_TIM_Base_Start_IT(&htim17);
+    if (tim17_status != HAL_OK) {
+        tim17_status = HAL_TIM_Base_Start_IT(&htim17);
+    }
+
     watchdog_config(&current_settings->flash_fire_threshold);
+
+
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
 
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 1);
     HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 1);
+    sol2_disengage();
 
-    
-    HAL_TIM_Base_Start_IT(&htim17);
     
     while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !ff_timeout_flag){
         //Wait for watchdog to trigger or ff timeout
     }
+    
     HAL_TIM_Base_Stop_IT(&htim17);
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
     HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 0);
     
 
-    sol2_disengage();
+    
     exposure_finish();
     s2_usart_mode();
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
