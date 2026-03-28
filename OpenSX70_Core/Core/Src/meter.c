@@ -39,7 +39,9 @@ void integrator_init(meter_iso *iso_setting){
     
     MeterWDGConfig.WatchdogNumber = ADC_ANALOGWATCHDOG_1;
     MeterWDGConfig.HighThreshold = current_settings->auto_exposure_threshold;
-    HAL_ADC_AnalogWDGConfig(&hadc1, &MeterWDGConfig);
+    if(HAL_ADC_AnalogWDGConfig(&hadc1, &MeterWDGConfig) != HAL_OK) {
+        HAL_ADC_AnalogWDGConfig(&hadc1, &MeterWDGConfig);
+    }
 }
 
 void integrator_reset(void){
@@ -62,8 +64,7 @@ void meter_set_iso(meter_iso *iso_setting){
 void watchdog_config(uint32_t *threshold){
     MeterWDGConfig.HighThreshold = *threshold;
     MeterWDGConfig.ITMode = DISABLE;
-    if (HAL_ADC_AnalogWDGConfig(&hadc1, &MeterWDGConfig) != HAL_OK) {
-        // Retry once for transient HAL busy/error states.
+    if(HAL_ADC_AnalogWDGConfig(&hadc1, &MeterWDGConfig) != HAL_OK) {
         HAL_ADC_AnalogWDGConfig(&hadc1, &MeterWDGConfig);
     }
 }

@@ -48,13 +48,17 @@ peripheral_state do_dongle_state_noDongle(peripheral_device *device){
     }
 
     if(waiting_for_ping_response){
-        HAL_UART_AbortReceive(&huart2);
+        if(HAL_UART_AbortReceive(&huart2) != HAL_OK) {
+            HAL_UART_AbortReceive(&huart2);
+        }
         waiting_for_ping_response = false;
     }
 
     send_command(PERIPHERAL_PING_CMD);
     waiting_for_ping_response = true;
-    HAL_UART_Receive_IT(&huart2, peripheral_uart_buffer, 1);
+    if(HAL_UART_Receive_IT(&huart2, peripheral_uart_buffer, 1) != HAL_OK) {
+        waiting_for_ping_response = false;
+    }
 
     return DONGLE_STATE_NODONGLE;
 }
@@ -77,7 +81,9 @@ peripheral_state do_dongle_state_dongle(peripheral_device *device){
     }
 
     if(waiting_for_ping_response){
-        HAL_UART_AbortReceive(&huart2);
+        if(HAL_UART_AbortReceive(&huart2) != HAL_OK) {
+            HAL_UART_AbortReceive(&huart2);
+        }
         waiting_for_ping_response = false;
         initialize_peripheral_device(device);
         return DONGLE_STATE_NODONGLE;
@@ -85,7 +91,9 @@ peripheral_state do_dongle_state_dongle(peripheral_device *device){
 
     send_command(PERIPHERAL_READ_CMD);
     waiting_for_ping_response = true;
-    HAL_UART_Receive_IT(&huart2, peripheral_uart_buffer, 1);
+    if(HAL_UART_Receive_IT(&huart2, peripheral_uart_buffer, 1) != HAL_OK) {
+        waiting_for_ping_response = false;
+    }
 
     return DONGLE_STATE_DONGLE;
 }
@@ -98,9 +106,13 @@ void set_peripheral_device(peripheral_device *device, uint8_t selector, bool swi
 }
 
 void send_command(uint8_t command){
-    HAL_HalfDuplex_EnableTransmitter(&huart2);
+    if(HAL_HalfDuplex_EnableTransmitter(&huart2) != HAL_OK) {
+        HAL_HalfDuplex_EnableTransmitter(&huart2);
+    }
     HAL_UART_Transmit(&huart2, &command, 1, PERIPHERAL_TIMEOUT_MS);
-    HAL_HalfDuplex_EnableReceiver(&huart2);
+    if(HAL_HalfDuplex_EnableReceiver(&huart2) != HAL_OK) {
+        HAL_HalfDuplex_EnableReceiver(&huart2);
+    }
 }
 
 bool get_dongle_settings(peripheral_device *device){

@@ -238,7 +238,6 @@ meter_iso read_iso(void) {
 
     if (data != ISO_640 && data != ISO_125) {
         return ISO_640;
-        //Debug output to indicate no valid ISO found in flash
     }
     return (meter_iso)data;
 }
