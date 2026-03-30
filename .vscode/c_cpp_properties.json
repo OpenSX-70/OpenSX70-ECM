@@ -1,15 +1,18 @@
 {
     "configurations": [
         {
-            "name": "Linux",
+            "name": "STM32-CMake",
             "includePath": [
-                "${workspaceFolder}/OpenSX70_Dongle/Core/**",
-                "${workspaceFolder}/OpenSX70_Dongle/Drivers/**"
+                "${workspaceFolder}/OpenSX70_Core/Core/**",
+                "${workspaceFolder}/OpenSX70_Core/Drivers/**",
+                "${workspaceFolder}/OpenSX70_Core/build/Release/cmake/stm32cubemx"
             ],
             "defines": [],
+            "compilerPath": "/usr/bin/arm-none-eabi-gcc",
+            "compileCommands": "${workspaceFolder}/OpenSX70_Core/build/Release/compile_commands.json",
             "cStandard": "c17",
             "cppStandard": "c++17",
-            "intelliSenseMode": "linux-clang-x64"
+            "intelliSenseMode": "gcc-arm"
         }
     ],
     "version": 4

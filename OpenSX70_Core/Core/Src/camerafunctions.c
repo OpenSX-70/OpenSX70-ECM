@@ -35,38 +35,36 @@ void sol2_low_power(){
     __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 77);
 }
 
-void mirror_down(){
-    HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, 1);
-
+bool debounce_read(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, GPIO_PinState expected_state){
     uint8_t stable = 0;
     while(stable < DEBOUNCE_DELAY){
-        if(HAL_GPIO_ReadPin(S5_GPIO_Port, S5_Pin) == 0){
+        if(HAL_GPIO_ReadPin(GPIOx, GPIO_Pin) == expected_state){
             stable++;
         } else {
             stable = 0;
         }
         HAL_Delay(1);
     }
+    return true;
+}
+
+void mirror_down(){
+    // Motor on until S5 closes.
+    HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, 1);
+
+    debounce_read(S5_GPIO_Port, S5_Pin, GPIO_PIN_RESET);
 
     HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, 0);
 }
 
 void mirror_up(){
-    if(HAL_GPIO_ReadPin(S3_GPIO_Port, S3_Pin) == 0){
-        HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, 1);
-    }
+    // Motor on until S5 opens, wait for mirror up (s3 to close).
+    HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, 1);
 
-    uint8_t stable = 0;
-    while(stable < DEBOUNCE_DELAY){
-        if(HAL_GPIO_ReadPin(S5_GPIO_Port, S5_Pin) == 1){
-            stable++;
-        } else {
-            stable = 0;
-        }
-        HAL_Delay(1);
-    }
-
+    debounce_read(S5_GPIO_Port, S5_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, 0);
+
+    while(HAL_GPIO_ReadPin(S3_GPIO_Port, S3_Pin) == GPIO_PIN_RESET);
 }
 
 void sonar_focus(){
@@ -88,8 +86,13 @@ void darkslide_eject(){
 
 void begin_exposure(){
     __HAL_ADC_DISABLE_IT(&hadc1, ADC_IT_AWD1);
-    HAL_TIM_Base_Stop_IT(&htim14); // Stop poller interrupts during exposure
-    HAL_TIM_Base_Stop_IT(&htim3);
+    // Stop poller interrupts during exposure
+    if(HAL_TIM_Base_Stop_IT(&htim14) != HAL_OK) {
+        HAL_TIM_Base_Stop_IT(&htim14);
+    }
+    if(HAL_TIM_Base_Stop_IT(&htim3) != HAL_OK) {
+        HAL_TIM_Base_Stop_IT(&htim3);
+    }
     shutter_close();
     HAL_Delay(40);
     mirror_up();
@@ -114,7 +117,10 @@ void auto_exposure(meter_iso *iso_setting){
     HAL_Delay(Y_DELAY);
     
     HAL_SuspendTick();
-    HAL_TIM_Base_Start_IT(&htim3);
+
+    if(HAL_TIM_Base_Start_IT(&htim3) != HAL_OK) {
+        HAL_TIM_Base_Start_IT(&htim3);
+    }
     
     shutter_open();
     HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 0);
@@ -123,7 +129,10 @@ void auto_exposure(meter_iso *iso_setting){
     while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !auto_exposure_timeout_flag){
         // Wait for either ADC integration or 15 second timeout
     }
-    HAL_TIM_Base_Stop_IT(&htim3);
+
+    if(HAL_TIM_Base_Stop_IT(&htim3) != HAL_OK) {
+        HAL_TIM_Base_Stop_IT(&htim3);
+    }
 
     exposure_finish();
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
@@ -150,32 +159,46 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     sol2_low_power();
     HAL_SuspendTick();
 
-    HAL_TIM_Base_Start_IT(&htim16);
+    HAL_StatusTypeDef tim16_status = HAL_TIM_Base_Start_IT(&htim16);
+    if (tim16_status != HAL_OK) {
+        tim16_status = HAL_TIM_Base_Start_IT(&htim16);
+    }
+
     shutter_open();
     HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 0);
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
     while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !fd_timeout_flag){
         //Wait for watchdog to trigger or fd timeout
     }
-    HAL_TIM_Base_Stop_IT(&htim16);
+
+    if(HAL_TIM_Base_Stop_IT(&htim16) != HAL_OK) {
+        HAL_TIM_Base_Stop_IT(&htim16);
+    }
+
+    if(HAL_TIM_Base_Start_IT(&htim17) != HAL_OK) {
+        HAL_TIM_Base_Start_IT(&htim17);
+    }
+
     watchdog_config(&current_settings->flash_fire_threshold);
+
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
 
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 1);
     HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 1);
+    sol2_disengage();
 
-    
-    HAL_TIM_Base_Start_IT(&htim17);
     
     while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !ff_timeout_flag){
         //Wait for watchdog to trigger or ff timeout
     }
-    HAL_TIM_Base_Stop_IT(&htim17);
+
+    if(HAL_TIM_Base_Stop_IT(&htim17) != HAL_OK) {
+        HAL_TIM_Base_Stop_IT(&htim17);
+    }
+
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
     HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 0);
     
-
-    sol2_disengage();
     exposure_finish();
     s2_usart_mode();
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
@@ -230,15 +253,14 @@ void exposure_finish(){
     HAL_ResumeTick();
     shutter_close();
     HAL_Delay(30);
-    HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 1);
     s2_usart_mode();
+    HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 1);
     if(multiple_exposure_flag){
         while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
         HAL_TIM_Base_Start_IT(&htim14);
         return;
     }
     else{
-        HAL_Delay(100);
         while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
         mirror_down();
         shutter_open();
