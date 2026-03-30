@@ -22,7 +22,6 @@ static const camera_state_funct STATE_MACHINE [STATE_N] = {
     &do_state_multi_exp
 };
 
-//Default state
 camera_state state = STATE_INIT;
 
 void opensx70_run_state_machine (void){
@@ -92,8 +91,6 @@ camera_state do_state_flashBar (void){
 }
 
 camera_state do_state_dongle (void){
-    // Light meter helper functions here
-
     if(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
         if(get_switch_state(SELF_TIMER)){
             self_timer();
@@ -154,7 +151,6 @@ camera_state return_state(peripheral_device *device){
 }
 
 void dongle_functions(void){
-    // Led off function here
     if(current_dongle_state.selector < 12){
         manual_exposure(current_dongle_state.selector);
     }

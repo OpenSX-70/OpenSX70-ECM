@@ -35,38 +35,36 @@ void sol2_low_power(){
     __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 77);
 }
 
-void mirror_down(){
-    HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, 1);
-
+bool debounce_read(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, GPIO_PinState expected_state){
     uint8_t stable = 0;
     while(stable < DEBOUNCE_DELAY){
-        if(HAL_GPIO_ReadPin(S5_GPIO_Port, S5_Pin) == 0){
+        if(HAL_GPIO_ReadPin(GPIOx, GPIO_Pin) == expected_state){
             stable++;
         } else {
             stable = 0;
         }
         HAL_Delay(1);
     }
+    return true;
+}
+
+void mirror_down(){
+    // Motor on until S5 closes.
+    HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, 1);
+
+    debounce_read(S5_GPIO_Port, S5_Pin, GPIO_PIN_RESET);
 
     HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, 0);
 }
 
 void mirror_up(){
-    if(HAL_GPIO_ReadPin(S3_GPIO_Port, S3_Pin) == 0){
-        HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, 1);
-    }
+    // Motor on until S5 opens, wait for mirror up (s3 to close).
+    HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, 1);
 
-    uint8_t stable = 0;
-    while(stable < DEBOUNCE_DELAY){
-        if(HAL_GPIO_ReadPin(S5_GPIO_Port, S5_Pin) == 1){
-            stable++;
-        } else {
-            stable = 0;
-        }
-        HAL_Delay(1);
-    }
-
+    debounce_read(S5_GPIO_Port, S5_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, 0);
+
+    debounce_read(S3_GPIO_Port, S3_Pin, GPIO_PIN_SET);
 }
 
 void sonar_focus(){
@@ -263,7 +261,6 @@ void exposure_finish(){
         return;
     }
     else{
-        HAL_Delay(100);
         while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
         mirror_down();
         shutter_open();
