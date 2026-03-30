@@ -64,7 +64,7 @@ void mirror_up(){
     debounce_read(S5_GPIO_Port, S5_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, 0);
 
-    debounce_read(S3_GPIO_Port, S3_Pin, GPIO_PIN_SET);
+    while(HAL_GPIO_ReadPin(S3_GPIO_Port, S3_Pin) == GPIO_PIN_RESET);
 }
 
 void sonar_focus(){
