@@ -2,8 +2,8 @@
 
 
 volatile bool auto_timeout_flag = false;
-volatile bool fd_timeout_flag = false;
-volatile bool ff_timeout_flag = false;
+volatile bool tim16_timeout_flag = false;
+volatile bool tim17_timeout_flag = false;
 volatile bool multiple_exposure_flag = false;
 volatile bool auto_exposure_timeout_flag = false;
 volatile bool auto_exposure_active = false;
@@ -143,8 +143,8 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     __HAL_TIM_SET_COUNTER(&htim17, 0);
     __HAL_TIM_CLEAR_FLAG(&htim16, TIM_FLAG_UPDATE);
     __HAL_TIM_CLEAR_FLAG(&htim17, TIM_FLAG_UPDATE);
-    fd_timeout_flag = false;
-    ff_timeout_flag = false;
+    tim16_timeout_flag = false;
+    tim17_timeout_flag = false;
 
     s2_ffa_mode();
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
@@ -167,7 +167,7 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     shutter_open();
     HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 0);
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
-    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !fd_timeout_flag){
+    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !tim16_timeout_flag){
         //Wait for watchdog to trigger or fd timeout
     }
 
@@ -188,7 +188,7 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     sol2_disengage();
 
     
-    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !ff_timeout_flag){
+    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !tim17_timeout_flag){
         //Wait for watchdog to trigger or ff timeout
     }
 
