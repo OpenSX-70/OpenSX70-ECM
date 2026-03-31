@@ -57,7 +57,6 @@ camera_state do_state_darkslide (void){
         #if SHUTTERDARKSLIDE
         }
         #endif
-        //return next_state;
     }
     else{
         next_state = return_state(&current_dongle_state);
@@ -250,6 +249,7 @@ void s1_iso_swap(void){
                 break;
             default:
                 newISO = ISO_640;
+                savedISO = ISO_640;
                 break;
         }
         save_iso(newISO);
