@@ -43,8 +43,6 @@ camera_state do_state_init (void){
         shutter_open();
     }
     s1_iso_swap();
-    HAL_Delay(200);
-    
     return STATE_DARKSLIDE;
 }
 
