@@ -13,8 +13,8 @@ extern TIM_HandleTypeDef htim16; // FD timeout timer
 extern TIM_HandleTypeDef htim17; // FF timeout timer
 
 extern volatile bool auto_exposure_timeout_flag;
-extern volatile bool fd_timeout_flag;
-extern volatile bool ff_timeout_flag;
+extern volatile bool tim16_timeout_flag;
+extern volatile bool tim17_timeout_flag;
 extern volatile bool multiple_exposure_flag;
 
 void solenoid_init(void);

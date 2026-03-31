@@ -639,11 +639,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   }
   else if (htim->Instance == TIM16){
     HAL_TIM_Base_Stop_IT(&htim16);
-    fd_timeout_flag = 1;
+    tim16_timeout_flag = 1;
   }
   else if (htim->Instance == TIM17){
     HAL_TIM_Base_Stop_IT(&htim17);
-    ff_timeout_flag = 1;
+    tim17_timeout_flag = 1;
   }
 }
 

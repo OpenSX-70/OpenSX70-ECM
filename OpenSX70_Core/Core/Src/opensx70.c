@@ -43,8 +43,6 @@ camera_state do_state_init (void){
         shutter_open();
     }
     s1_iso_swap();
-    HAL_Delay(200);
-    init_complete = true;
     return STATE_DARKSLIDE;
 }
 
@@ -59,7 +57,6 @@ camera_state do_state_darkslide (void){
         #if SHUTTERDARKSLIDE
         }
         #endif
-        return next_state;
     }
     else{
         next_state = return_state(&current_dongle_state);
@@ -68,6 +65,7 @@ camera_state do_state_darkslide (void){
     if(!isoBlinked){
         ISOBlink(&savedISO);
     } 
+    init_complete = true;
     return next_state;
 }
 
@@ -251,6 +249,7 @@ void s1_iso_swap(void){
                 break;
             default:
                 newISO = ISO_640;
+                savedISO = ISO_640;
                 break;
         }
         save_iso(newISO);
