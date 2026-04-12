@@ -157,7 +157,7 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     sol2_engage();
     HAL_Delay(Y_DELAY);
     sol2_low_power();
-    HAL_SuspendTick();
+    //HAL_SuspendTick();
 
     HAL_StatusTypeDef tim16_status = HAL_TIM_Base_Start_IT(&htim16);
     if (tim16_status != HAL_OK) {
@@ -182,10 +182,14 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     watchdog_config(&current_settings->flash_fire_threshold);
 
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
-
+    HAL_Delay(2);
+    
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 1);
     HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 1);
+    
     sol2_disengage();
+    //HAL_Delay(2);
+
 
     
     while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !tim17_timeout_flag){
@@ -196,11 +200,8 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
         HAL_TIM_Base_Stop_IT(&htim17);
     }
 
-    HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
-    HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 0);
     
     exposure_finish();
-    s2_usart_mode();
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
 }
 
@@ -214,7 +215,6 @@ void manual_exposure(uint8_t selector_value){
         HAL_Delay(delay_time);
         flash();
         HAL_Delay(Flash_Capture_Delay);
-        HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 0);
     }
     else{
         uint32_t delay_time = ShutterSpeed[selector_value];
@@ -233,7 +233,6 @@ void bulb_mode(){
     while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
     flash();
     HAL_Delay(Flash_Capture_Delay);
-    HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 0);
     exposure_finish();
 }
 
@@ -245,13 +244,14 @@ void time_mode(){
     while(!HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
     flash();
     HAL_Delay(Flash_Capture_Delay);
-    HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 0);
     exposure_finish();
 }
 
 void exposure_finish(){
     HAL_ResumeTick();
     shutter_close();
+    HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
+    HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 0);
     HAL_Delay(30);
     s2_usart_mode();
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 1);
