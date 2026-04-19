@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 const uint8_t Y_DELAY = 40;
-const uint8_t POWER_DOWN_DELAY = 25;
+const uint8_t POWER_DOWN_DELAY = 28;
 
 // *** FILL FLASH ***
 // Explanation for these numbers. Concept is pulled directly from fill flash description in the alpha repair supplement.
