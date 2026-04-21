@@ -157,6 +157,7 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     watchdog_config(&current_settings->flash_delay_threshold);
 
     sol2_engage();
+    __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
     HAL_Delay(Y_DELAY);
     sol2_low_power();
     //HAL_SuspendTick();
@@ -167,6 +168,7 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     }
 
     shutter_open();
+    
     HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 0);
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
     while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !tim16_timeout_flag){
@@ -184,15 +186,11 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     watchdog_config(&current_settings->flash_fire_threshold);
 
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
-    //HAL_Delay(2);
     
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 1);
     HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 1);
     
     sol2_disengage();
-    //HAL_Delay(2);
-
-
     
     while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !tim17_timeout_flag){
         //Wait for watchdog to trigger or ff timeout
