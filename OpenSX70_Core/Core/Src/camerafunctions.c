@@ -99,13 +99,24 @@ void begin_exposure(){
 }
 
 void auto_exposure(meter_iso *iso_setting){
-    // Set timer 3 to 15 seconds for auto exposure timeout
-    htim3.Init.Prescaler = 3663;
-    htim3.Init.Period = 65501;
+    // Auto mode timeouts set by film ISO to mimic original camera behavior. 
+    // Auto exposure timeout for SX-70 speed cameras is 15 seconds.
+    // Auto exposure timout for 600 speed cameras is 5 seconds.
+    switch(*iso_setting){
+        case ISO_125:
+            htim3.Init.Prescaler = 3663;
+            htim3.Init.Period = 65501;
+            break;
+        default:
+            htim3.Init.Prescaler = 1231;
+            htim3.Init.Period = 64934;    
+    }
+    
     if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
     {
         Error_Handler();
     }
+
     HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 1);
     __HAL_TIM_SET_COUNTER(&htim3, 0);
     __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE);
