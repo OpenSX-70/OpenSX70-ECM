@@ -6,7 +6,7 @@
 //      Feature toggles
 #define SHUTTERDARKSLIDE 0       //1 Enables feature to not eject dark slide until shutter button is pressed
 #define TIMER_MIRROR_UP 1        //1 Enables mirror up feature for self timer modes
-#define EIGHT_SHOT_PACK 1        //1 Makes all counter-based functions work based on an 8 shot pack rather than 10
+#define EIGHT_SHOT_PACK 1        //1 Makes all counter-based functions work based on an 8 shot pack rather than 10  
 #define LIGHMETER_HELPER 1       //1 Enables viewfinder light meter helper
 #define EJECT_AFTER_DEPRESSING 1 //1 Enables the user to hold the shutter button to prevent photo ejection
 
@@ -32,11 +32,11 @@
 
 //---------------MAGIC NUMBERS---------------------------------------------
 #define A100 4093 //less than max value as watchdog requires exceeding value to trigger
-#define A600 1020
-#define FD100 1365
-#define FF100 1820
-#define FD600 785 //340
-#define FF600 1020 //442
+#define A600 1200
+#define FD100 2809
+#define FF100 3652
+#define FD600 700
+#define FF600 910
 //---------------END MAGIC NUMBERS-----------------------------------------
 
 //---------------Flashbar and Dongle Flash---------------------------------
