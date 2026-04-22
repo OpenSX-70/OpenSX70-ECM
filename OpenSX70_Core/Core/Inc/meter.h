@@ -29,7 +29,6 @@ struct meter_settings{
 };
 
 void integrator_init(meter_iso *iso_setting);
-void integrator_reset(void);
 void meter_set_iso(meter_iso *iso_setting);
 void watchdog_config(uint32_t *threshold);
 void approximate_exposure_time(light_meter_helper lm_helper);

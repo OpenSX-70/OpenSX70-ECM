@@ -44,11 +44,6 @@ void integrator_init(meter_iso *iso_setting){
     }
 }
 
-void integrator_reset(void){
-    HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 1);
-    HAL_Delay(METER_RESET_DELAY);
-    HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 0);
-}
 
 void meter_set_iso(meter_iso *iso_setting){
     switch(*iso_setting){

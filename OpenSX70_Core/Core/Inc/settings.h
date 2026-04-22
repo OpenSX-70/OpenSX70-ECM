@@ -5,8 +5,6 @@
 
 //      Feature toggles
 #define SHUTTERDARKSLIDE 0       //1 Enables feature to not eject dark slide until shutter button is pressed
-#define TIMER_MIRROR_UP 1        //1 Enables mirror up feature for self timer modes
-#define EIGHT_SHOT_PACK 1        //1 Makes all counter-based functions work based on an 8 shot pack rather than 10  
 #define LIGHMETER_HELPER 1       //1 Enables viewfinder light meter helper
 #define EJECT_AFTER_DEPRESSING 1 //1 Enables the user to hold the shutter button to prevent photo ejection
 
@@ -25,8 +23,6 @@
 
 #define MEXP_MODE 1
 #define SELF_TIMER 2
-#define DONGLE_AUTO_FLASH 0
-#define AUTO_STOP_DOWN 0
 
 //----------------END DONGLE SWITCH FEATURE SELECTION---------------------
 
@@ -41,23 +37,15 @@
 
 //---------------Flashbar and Dongle Flash---------------------------------
 #define Flash_Capture_Delay 4
-#define Dongle_Flash_Limit 4
 //---------------End Flash settings----------------------------------------
 
 //---------------METER SETTINGS--------------------------------------------
-#define METER_AUTO_WARNING 100 // If predicted ms is over this value, warning LED will shine in auto mode
-#define METER_PREDICTION_OFFSET 20 // in ms. This gets added to the prediction. At f8 I noticed all meter predictions were around 20ms off
-#define METER_SLOPE_HANDICAP 0 // Not used currently. Used to increase/decrease the slope of the prediction.
-#define METER_RESET_DELAY 2 // Time required for light meter capacitor to fully reset
-#define METER_POLLING_THRESHOLD 4000 
 #define METER_OVERFLOW_THRESHOLD 2
 //---------------END METER SETTINGS----------------------------------------
 
-// Timeout constant for peripheral communication (5ms)
 #define PERIPHERAL_TIMEOUT_MS 5
-#define PERIPHERAL_RESPONSE_TIMEOUT_TICKS 1000  // Assuming ~1ms per state machine tick, 1 second timeout
 
-#define DEBOUNCE_DELAY 5  // Debounce delay in ms for GPIO reads
+#define DEBOUNCE_DELAY 5
 
 
 enum dial_settings{
