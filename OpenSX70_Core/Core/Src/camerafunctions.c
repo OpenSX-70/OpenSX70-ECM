@@ -5,7 +5,7 @@ volatile bool auto_timeout_flag = false;
 volatile bool tim16_timeout_flag = false;
 volatile bool tim17_timeout_flag = false;
 volatile bool multiple_exposure_flag = false;
-volatile bool auto_exposure_timeout_flag = false;
+volatile bool tim3_timeout_flag = false;
 volatile bool auto_exposure_active = false;
 
 void solenoid_init(void){
@@ -120,14 +120,14 @@ void auto_exposure(meter_iso *iso_setting){
     HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 1);
     __HAL_TIM_SET_COUNTER(&htim3, 0);
     __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE);
-    auto_exposure_timeout_flag = false;
+    tim3_timeout_flag = false;
 
     meter_set_iso(iso_setting);
     watchdog_config(&current_settings->auto_exposure_threshold);
 
     HAL_Delay(Y_DELAY);
     
-    //HAL_SuspendTick();
+    HAL_SuspendTick();
 
     if(HAL_TIM_Base_Start_IT(&htim3) != HAL_OK) {
         HAL_TIM_Base_Start_IT(&htim3);
@@ -139,7 +139,7 @@ void auto_exposure(meter_iso *iso_setting){
     shutter_open();
     
     
-    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !auto_exposure_timeout_flag){
+    while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !tim3_timeout_flag){
         // Wait for either ADC integration or 15 second timeout
     }
 
@@ -216,24 +216,43 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
 }
 
-void manual_exposure(uint8_t selector_value){
+void manual_exposure(struct shutter_speed_timing timing){
     HAL_Delay(Y_DELAY);
+    HAL_SuspendTick();
 
-    if(selector_value >= Dongle_Flash_Limit){
-        uint32_t delay_time = (ShutterSpeed[selector_value] - Flash_Capture_Delay);
+    htim3.Init.Prescaler = timing.prescaler;
+    htim3.Init.Period = timing.period;
+
+    if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    __HAL_TIM_SET_COUNTER(&htim3, 0);
+    __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE);
+    tim3_timeout_flag = false;
+
+    if(timing.flash_enabled){
         HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
-        shutter_open();
-        HAL_Delay(delay_time);
-        flash();
-        HAL_Delay(Flash_Capture_Delay);
-    }
-    else{
-        uint32_t delay_time = ShutterSpeed[selector_value];
-        shutter_open();
-        HAL_Delay(delay_time);
     }
 
-    HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
+    shutter_open();
+    if(HAL_TIM_Base_Start_IT(&htim3) != HAL_OK) {
+        HAL_TIM_Base_Start_IT(&htim3);
+    }
+
+    while(!tim3_timeout_flag){
+        
+    }
+
+    if(timing.flash_enabled){
+        flash();
+    }
+
+    if(HAL_TIM_Base_Stop_IT(&htim3) != HAL_OK) {
+        HAL_TIM_Base_Stop_IT(&htim3);
+    }
+
     exposure_finish();
 }
 
@@ -259,7 +278,7 @@ void time_mode(){
 }
 
 void exposure_finish(){
-    //HAL_ResumeTick();
+    HAL_ResumeTick();
     shutter_close();
     
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);

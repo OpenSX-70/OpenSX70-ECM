@@ -631,7 +631,7 @@ static void MX_GPIO_Init(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if (htim->Instance == TIM3){
-    auto_exposure_timeout_flag = 1;
+    tim3_timeout_flag = 1;
     tim3_overflow_count++;
   }
   else if (htim->Instance == TIM14){

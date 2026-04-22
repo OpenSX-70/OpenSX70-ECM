@@ -60,12 +60,36 @@
 #define DEBOUNCE_DELAY 5  // Debounce delay in ms for GPIO reads
 
 
-enum positions_t {POST = -100, POSB, AUTO, AUTO_F};
+enum dial_settings{
+    S_1_2000 = 0,
+    S_1_1000,
+    S_1_500,
+    S_1_250,
+    S_1_125,
+    S_1_60,
+    S_1_30,
+    S_1_15,
+    S_1_8,
+    S_1_4,
+    S_1_2,
+    S_1,
+    POST, 
+    POSB, 
+    AUTO, 
+    AUTO_F
+};
 
 extern const uint8_t POWER_DOWN_DELAY;
 extern const uint8_t Y_DELAY;
 extern const int32_t ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
 
+struct shutter_speed_timing{
+    uint16_t prescaler;
+    uint16_t period;
+    bool flash_enabled;
+};
+
+extern struct shutter_speed_timing ShutterSpeedTiming[];
 
 #define FLASH_USER_DATA_ADDR  (0x08000000 + 32*1024 - 2048)
 

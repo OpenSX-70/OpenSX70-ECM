@@ -150,7 +150,7 @@ camera_state return_state(peripheral_device *device){
 
 void dongle_functions(void){
     if(current_dongle_state.selector < 12){
-        manual_exposure(current_dongle_state.selector);
+        manual_exposure(ShutterSpeedTiming[current_dongle_state.selector]);
     }
     else if(ShutterSpeed[current_dongle_state.selector] == POST){
         time_mode();
