@@ -5,8 +5,6 @@
 
 //      Feature toggles
 #define SHUTTERDARKSLIDE 0       //1 Enables feature to not eject dark slide until shutter button is pressed
-#define TIMER_MIRROR_UP 1        //1 Enables mirror up feature for self timer modes
-#define EIGHT_SHOT_PACK 1        //1 Makes all counter-based functions work based on an 8 shot pack rather than 10
 #define LIGHMETER_HELPER 1       //1 Enables viewfinder light meter helper
 #define EJECT_AFTER_DEPRESSING 1 //1 Enables the user to hold the shutter button to prevent photo ejection
 
@@ -25,47 +23,61 @@
 
 #define MEXP_MODE 1
 #define SELF_TIMER 2
-#define DONGLE_AUTO_FLASH 0
-#define AUTO_STOP_DOWN 0
 
 //----------------END DONGLE SWITCH FEATURE SELECTION---------------------
 
 //---------------MAGIC NUMBERS---------------------------------------------
 #define A100 4093 //less than max value as watchdog requires exceeding value to trigger
-#define A600 1020
-#define FD100 1365
-#define FF100 1820
-#define FD600 340
-#define FF600 442
+#define A600 1200
+#define FD100 2809
+#define FF100 3652
+#define FD600 700
+#define FF600 910
 //---------------END MAGIC NUMBERS-----------------------------------------
 
 //---------------Flashbar and Dongle Flash---------------------------------
 #define Flash_Capture_Delay 4
-#define Dongle_Flash_Limit 4
 //---------------End Flash settings----------------------------------------
 
 //---------------METER SETTINGS--------------------------------------------
-#define METER_AUTO_WARNING 100 // If predicted ms is over this value, warning LED will shine in auto mode
-#define METER_PREDICTION_OFFSET 20 // in ms. This gets added to the prediction. At f8 I noticed all meter predictions were around 20ms off
-#define METER_SLOPE_HANDICAP 0 // Not used currently. Used to increase/decrease the slope of the prediction.
-#define METER_RESET_DELAY 2 // Time required for light meter capacitor to fully reset
-#define METER_POLLING_THRESHOLD 4000 
 #define METER_OVERFLOW_THRESHOLD 2
 //---------------END METER SETTINGS----------------------------------------
 
-// Timeout constant for peripheral communication (5ms)
 #define PERIPHERAL_TIMEOUT_MS 5
-#define PERIPHERAL_RESPONSE_TIMEOUT_TICKS 1000  // Assuming ~1ms per state machine tick, 1 second timeout
 
-#define DEBOUNCE_DELAY 5  // Debounce delay in ms for GPIO reads
+#define DEBOUNCE_DELAY 5
 
 
-enum positions_t {POST = -100, POSB, AUTO, AUTO_F};
+enum dial_settings{
+    S_1_2000 = 0,
+    S_1_1000,
+    S_1_500,
+    S_1_250,
+    S_1_125,
+    S_1_60,
+    S_1_30,
+    S_1_15,
+    S_1_8,
+    S_1_4,
+    S_1_2,
+    S_1,
+    POST, 
+    POSB, 
+    AUTO, 
+    AUTO_F
+};
 
 extern const uint8_t POWER_DOWN_DELAY;
 extern const uint8_t Y_DELAY;
 extern const int32_t ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
 
+struct shutter_speed_timing{
+    uint16_t prescaler;
+    uint16_t period;
+    bool flash_enabled;
+};
+
+extern struct shutter_speed_timing ShutterSpeedTiming[];
 
 #define FLASH_USER_DATA_ADDR  (0x08000000 + 32*1024 - 2048)
 
