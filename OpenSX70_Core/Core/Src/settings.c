@@ -10,14 +10,15 @@ const int32_t ShutterSpeed[] = {     S_1_2000,   S_1_1000,   S_1_500,    S_1_250
 
 
 // {PRESCALER, PERIOD (ARR), FLASH_ENABLED}
+// Values are scaled to microseconds, if any feel too over/under there is a lot of flexibility.
 struct shutter_speed_timing ShutterSpeedTiming[] = {
     {7, 45999, false}, // S_1_2000, 23ms
     {7, 53999, false}, // S_1_1000, 27ms
-    {7, 63999, false}, // S_1_500, 32ms
+    {7, 61999, false}, // S_1_500, 32ms
     {15, 33999, false}, // S_1_250, 34ms
-    {15, 38999, true}, // S_1_125, 39ms
-    {15, 43999, true}, // S_1_60, 44 ms
-    {15, 53999, true}, // S_1_30, 54ms
+    {15, 40999, true}, // S_1_125, 41ms
+    {15, 47999, true}, // S_1_60, 48 ms
+    {15, 57999, true}, // S_1_30, 58ms
     {31, 32999, true}, // S_1_15, 66ms
     {31, 62499, true}, // S_1_8, 125ms
     {63, 62499, true}, // S_1_4, 250ms
@@ -28,4 +29,3 @@ struct shutter_speed_timing ShutterSpeedTiming[] = {
     {0,0, true},         // AUTO (handled separately)
     {0,0, true}          // AUTO_F (handled separately)
 };
-
