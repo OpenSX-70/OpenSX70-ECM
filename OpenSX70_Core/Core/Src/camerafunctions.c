@@ -171,7 +171,7 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
     HAL_Delay(Y_DELAY);
     sol2_low_power();
-    //HAL_SuspendTick();
+    HAL_SuspendTick();
 
     HAL_StatusTypeDef tim16_status = HAL_TIM_Base_Start_IT(&htim16);
     if (tim16_status != HAL_OK) {
@@ -286,13 +286,13 @@ void exposure_finish(){
     HAL_Delay(30);
     s2_usart_mode();
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 1);
+    while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
     if(multiple_exposure_flag){
-        while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
         HAL_TIM_Base_Start_IT(&htim14);
+        HAL_Delay(100);
         return;
     }
     else{
-        while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
         mirror_down();
         shutter_open();
         HAL_Delay(100);
