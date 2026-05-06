@@ -47,6 +47,13 @@
 
 #define DEBOUNCE_DELAY 5
 
+enum setting_type{
+    MANUAL_SPEED,
+    T_MODE,
+    B_MODE,
+    AUTO,
+    AUTO_F,
+};
 
 enum dial_settings{
     S_1_2000 = 0,

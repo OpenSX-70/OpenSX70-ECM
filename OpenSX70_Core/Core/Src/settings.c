@@ -6,7 +6,24 @@ const uint8_t Y_DELAY = 40;
 const uint8_t POWER_DOWN_DELAY = 28;
 
 
-const int32_t ShutterSpeed[] = {     S_1_2000,   S_1_1000,   S_1_500,    S_1_250,  S_1_125,   S_1_60,  S_1_30,   S_1_15,  S_1_8,  S_1_4, S_1_2, S_1, POST, POSB, AUTO, AUTO_F};
+const int32_t ShutterSpeed[] = {
+    S_1_2000,
+    S_1_1000,
+    S_1_500,    
+    S_1_250,  
+    S_1_125,   
+    S_1_60,  
+    S_1_30,   
+    S_1_15,  
+    S_1_8,  
+    S_1_4, 
+    S_1_2, 
+    S_1, 
+    POST, 
+    POSB, 
+    AUTO, 
+    AUTO_F
+};
 
 
 // {PRESCALER, PERIOD (ARR), FLASH_ENABLED}
