@@ -52,7 +52,7 @@ enum setting_type{
     T_MODE,
     B_MODE,
     AUTO,
-    AUTO_F,
+    AUTO_F
 };
 
 enum dial_settings{
