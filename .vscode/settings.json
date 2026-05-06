@@ -1,4 +1,4 @@
 {
-    "cmake.sourceDirectory": "${workspaceFolder}/OpenSX70_Core",
-    "C_Cpp.default.compileCommands": "${workspaceFolder}/OpenSX70_Core/build/Debug/compile_commands.json"
+    "cmake.sourceDirectory": "${workspaceFolder}/OpenSX70_ECM",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/OpenSX70_ECM/build/Debug/compile_commands.json"
 }
