@@ -216,12 +216,12 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
 }
 
-void manual_exposure(struct shutter_speed_timing timing){
+void manual_exposure(struct shutter_speed_timing *timing){
     HAL_Delay(Y_DELAY);
     HAL_SuspendTick();
 
-    htim3.Init.Prescaler = timing.prescaler;
-    htim3.Init.Period = timing.period;
+    htim3.Init.Prescaler = timing->prescaler;
+    htim3.Init.Period = timing->period;
 
     if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
     {
@@ -232,7 +232,7 @@ void manual_exposure(struct shutter_speed_timing timing){
     __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE);
     tim3_timeout_flag = false;
 
-    if(timing.flash_enabled){
+    if(timing->flash_enabled){
         HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
     }
 
@@ -245,7 +245,7 @@ void manual_exposure(struct shutter_speed_timing timing){
         
     }
 
-    if(timing.flash_enabled){
+    if(timing->flash_enabled){
         flash();
     }
 

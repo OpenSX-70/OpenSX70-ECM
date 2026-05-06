@@ -152,7 +152,7 @@ void dongle_functions(void){
     switch (ShutterSpeedTiming[current_dongle_state.selector].type)
     {
         case MANUAL_SPEED:
-            manual_exposure(ShutterSpeedTiming[current_dongle_state.selector]);
+            manual_exposure(&ShutterSpeedTiming[current_dongle_state.selector]);
             break;
         case T_MODE:
             time_mode();
