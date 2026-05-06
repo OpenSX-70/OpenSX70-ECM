@@ -149,27 +149,25 @@ camera_state return_state(peripheral_device *device){
 }
 
 void dongle_functions(void){
-    if(current_dongle_state.selector < 12){
-        manual_exposure(ShutterSpeedTiming[current_dongle_state.selector]);
-    }
-    else if(ShutterSpeed[current_dongle_state.selector] == POST){
-        time_mode();
-    }
-    else if(ShutterSpeed[current_dongle_state.selector] == POSB){
-        bulb_mode();
-    }
-    else{
-        switch(ShutterSpeed[current_dongle_state.selector]){
-            case AUTO:
-                auto_exposure(&savedISO);
-                break;
-            case AUTO_F:
-                auto_exposure_flashbar(&savedISO);
-                break;
-            default:
-                auto_exposure(&savedISO);
-                break;
-        }
+    switch (ShutterSpeedTiming[current_dongle_state.selector].type)
+    {
+        case MANUAL_SPEED:
+            manual_exposure(ShutterSpeedTiming[current_dongle_state.selector]);
+            break;
+        case T_MODE:
+            time_mode();
+            break;
+        case B_MODE:
+            bulb_mode();
+            break;
+        case AUTO_MODE:
+            auto_exposure(&savedISO);
+            break;
+        case AUTO_F_MODE:
+            auto_exposure_flashbar(&savedISO);
+            break;
+        default:
+            break;
     }
 }
 

@@ -51,27 +51,8 @@ enum setting_type{
     MANUAL_SPEED,
     T_MODE,
     B_MODE,
-    AUTO,
-    AUTO_F
-};
-
-enum dial_settings{
-    S_1_2000 = 0,
-    S_1_1000,
-    S_1_500,
-    S_1_250,
-    S_1_125,
-    S_1_60,
-    S_1_30,
-    S_1_15,
-    S_1_8,
-    S_1_4,
-    S_1_2,
-    S_1,
-    POST, 
-    POSB, 
-    AUTO, 
-    AUTO_F
+    AUTO_MODE,
+    AUTO_F_MODE
 };
 
 extern const uint8_t POWER_DOWN_DELAY;
@@ -82,6 +63,7 @@ struct shutter_speed_timing{
     uint16_t prescaler;
     uint16_t period;
     bool flash_enabled;
+    enum setting_type type;
 };
 
 extern struct shutter_speed_timing ShutterSpeedTiming[];
