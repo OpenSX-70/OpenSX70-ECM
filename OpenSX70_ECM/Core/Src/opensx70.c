@@ -208,7 +208,7 @@ void ISOBlink(meter_iso *savedISO){
     }
 }
 
-void save_iso(meter_iso iso) {
+void save_iso(meter_iso *iso) {
     HAL_FLASH_Unlock();
     
     FLASH_EraseInitTypeDef eraseInit = {
@@ -219,10 +219,10 @@ void save_iso(meter_iso iso) {
     uint32_t pageError;
     HAL_FLASHEx_Erase(&eraseInit, &pageError);
     
-    HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, FLASH_USER_DATA_ADDR, (uint64_t)iso);
+    HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, FLASH_USER_DATA_ADDR, (uint64_t)*iso);
     
     HAL_FLASH_Lock();
-    savedISO = iso;
+    savedISO = *iso;
 }
 
 meter_iso read_iso(void) {
@@ -250,7 +250,7 @@ void s1_iso_swap(void){
                 savedISO = ISO_640;
                 break;
         }
-        save_iso(newISO);
+        save_iso(&newISO);
         ISOBlink(&savedISO);
         isoBlinked = true;
     }
