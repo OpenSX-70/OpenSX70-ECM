@@ -6,11 +6,6 @@
 //      Feature toggles
 #define SHUTTERDARKSLIDE 0       //1 Enables feature to not eject dark slide until shutter button is pressed
 #define LIGHMETER_HELPER 1       //1 Enables viewfinder light mstruct shutter_speed_timing{
-    uint16_t prescaler;
-    uint16_t period;
-    bool flash_enabled;
-    enum setting_type type;
-};eter helper
 #define EJECT_AFTER_DEPRESSING 1 //1 Enables the user to hold the shutter button to prevent photo ejection
 #define FUZZY_MANUAL_MODE 0
 
