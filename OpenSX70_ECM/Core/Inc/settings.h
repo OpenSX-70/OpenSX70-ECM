@@ -5,9 +5,14 @@
 
 //      Feature toggles
 #define SHUTTERDARKSLIDE 0       //1 Enables feature to not eject dark slide until shutter button is pressed
-#define LIGHMETER_HELPER 1       //1 Enables viewfinder light meter helper
+#define LIGHMETER_HELPER 1       //1 Enables viewfinder light mstruct shutter_speed_timing{
+    uint16_t prescaler;
+    uint16_t period;
+    bool flash_enabled;
+    enum setting_type type;
+};eter helper
 #define EJECT_AFTER_DEPRESSING 1 //1 Enables the user to hold the shutter button to prevent photo ejection
-
+#define FUZZY_MANUAL_MODE 0
 
 //----------------DONGLE SWITCH FEATURE SELECTION-------------------------
 // 1 and 2 values assign features to switch 1 and 2, 0 means unused.
@@ -59,12 +64,23 @@ extern const uint8_t POWER_DOWN_DELAY;
 extern const uint8_t Y_DELAY;
 extern const int32_t ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
 
+#if FUZZY_MANUAL_MODE
+struct shutter_speed_timing{
+    uint16_t min_prescaler;
+    uint16_t min_period;
+    uint16_t max_prescaler;
+    uint16_t max_period;
+    bool flash_enabled;
+    enum setting_type type;
+};
+#else
 struct shutter_speed_timing{
     uint16_t prescaler;
     uint16_t period;
     bool flash_enabled;
     enum setting_type type;
 };
+#endif
 
 extern struct shutter_speed_timing ShutterSpeedTiming[];
 

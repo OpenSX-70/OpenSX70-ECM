@@ -1,6 +1,5 @@
 #include "camerafunctions.h"
 
-
 volatile bool auto_timeout_flag = false;
 volatile bool tim16_timeout_flag = false;
 volatile bool tim17_timeout_flag = false;
