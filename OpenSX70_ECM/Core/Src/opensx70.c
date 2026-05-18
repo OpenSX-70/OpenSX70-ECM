@@ -149,10 +149,18 @@ camera_state return_state(peripheral_device *device){
 }
 
 void dongle_functions(void){
+    #if FUZZY_MANUAL_MODE
+    switch (FuzzyShutterSpeedTiming[current_dongle_state.selector].type)
+    #else
     switch (ShutterSpeedTiming[current_dongle_state.selector].type)
+    #endif
     {
         case MANUAL_SPEED:
+            #if FUZZY_MANUAL_MODE
+            fuzzy_manual_exposure(&FuzzyShutterSpeedTiming[current_dongle_state.selector], &savedISO);
+            #else
             manual_exposure(&ShutterSpeedTiming[current_dongle_state.selector]);
+            #endif
             break;
         case T_MODE:
             time_mode();

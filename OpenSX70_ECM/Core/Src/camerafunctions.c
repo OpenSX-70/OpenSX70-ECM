@@ -223,6 +223,46 @@ void manual_exposure(struct shutter_speed_timing *timing){
     HAL_Delay(Y_DELAY);
     HAL_SuspendTick();
 
+    htim3.Init.Prescaler = timing->prescaler;
+    htim3.Init.Period = timing->period;
+
+    if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    __HAL_TIM_SET_COUNTER(&htim3, 0);
+    __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE);
+    tim3_timeout_flag = false;
+
+    if(timing->flash_enabled){
+        HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
+    }
+
+    shutter_open();
+
+    if(HAL_TIM_Base_Start_IT(&htim3) != HAL_OK) {
+        HAL_TIM_Base_Start_IT(&htim3);
+    }
+
+    while(!tim3_timeout_flag){
+        
+    }
+    if(timing->flash_enabled){
+        flash();
+    }
+
+    if(HAL_TIM_Base_Stop_IT(&htim3) != HAL_OK) {
+        HAL_TIM_Base_Stop_IT(&htim3);
+    }
+    exposure_finish();
+}
+
+#if FUZZY_MANUAL_MODE
+void fuzzy_manual_exposure(struct shutter_speed_timing *timing, meter_iso *iso_setting){
+    HAL_Delay(Y_DELAY);
+    HAL_SuspendTick();
+
     #if FUZZY_MANUAL_MODE
     __HAL_TIM_SET_COUNTER(&htim16, 0);
     __HAL_TIM_SET_COUNTER(&htim17, 0);
@@ -244,6 +284,7 @@ void manual_exposure(struct shutter_speed_timing *timing){
         Error_Handler();
     }
     
+    HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 1);
     #else
     htim3.Init.Prescaler = timing->prescaler;
     htim3.Init.Period = timing->period;
@@ -265,6 +306,8 @@ void manual_exposure(struct shutter_speed_timing *timing){
     shutter_open();
 
     #if FUZZY_MANUAL_MODE
+    __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
+    HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 0);
     if(HAL_TIM_Base_Start_IT(&htim16) != HAL_OK) {
         HAL_TIM_Base_Start_IT(&htim16);
     }
@@ -272,7 +315,7 @@ void manual_exposure(struct shutter_speed_timing *timing){
         HAL_TIM_Base_Start_IT(&htim17);
     }
 
-    while((!tim16_timeout_flag || !__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1)) && !tim17_timeout_flag){
+    while((!tim16_timeout_flag && !__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1)) && !tim17_timeout_flag){
         
     }
     #else
@@ -302,6 +345,7 @@ void manual_exposure(struct shutter_speed_timing *timing){
     #endif
     exposure_finish();
 }
+#endif
 
 void bulb_mode(){
     HAL_Delay(Y_DELAY);
