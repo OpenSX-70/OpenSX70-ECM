@@ -31,7 +31,9 @@ void begin_exposure(void);
 void auto_exposure(meter_iso *iso_setting);
 void auto_exposure_flashbar(meter_iso *iso_setting);
 void manual_exposure(struct shutter_speed_timing *timing);
-void fuzzy_manual_exposure(struct shutter_speed_timing *timing, meter_iso *iso_setting);
+#if FUZZY_MANUAL_MODE
+void fuzzy_manual_exposure(struct fuzzy_shutter_speed_timing *timing, meter_iso *iso_setting);
+#endif
 void bulb_mode(void);
 void time_mode(void);
 void exposure_finish(void);
