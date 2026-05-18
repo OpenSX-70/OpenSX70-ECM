@@ -11,7 +11,7 @@ const uint8_t POWER_DOWN_DELAY = 28;
 // and leave the register width set to 16 bits.
 // ARR = period, PSC = prescaler
 #if FUZZY_MANUAL_MODE
-struct shutter_speed_timing ShutterSpeedTiming[] = {
+struct fuzzy_shutter_speed_timing FuzzyShutterSpeedTiming[] = {
     {.min_prescaler = 7, .min_period = 43999, .max_prescaler = 7, .max_period = 49999, .flash_enabled = false, .type = MANUAL_SPEED}, //23, 22-25ms
     {.min_prescaler = 7, .min_period = 49999, .max_prescaler = 7, .max_period = 58999, .flash_enabled = false, .type = MANUAL_SPEED}, //27, 25 - 29.5
     {.min_prescaler = 7, .min_period = 58999, .max_prescaler = 15, .max_period = 32999, .flash_enabled = false, .type = MANUAL_SPEED}, //32, 29.5 - 33
@@ -29,7 +29,7 @@ struct shutter_speed_timing ShutterSpeedTiming[] = {
     {.min_prescaler = 0, .min_period = 0, .max_prescaler = 0, .max_period = 0, .flash_enabled = true, .type = AUTO_MODE},
     {.min_prescaler = 0, .min_period = 0, .max_prescaler = 0, .max_period = 0, .flash_enabled = true, .type = AUTO_F_MODE}
 };
-#else
+#endif
 struct shutter_speed_timing ShutterSpeedTiming[] = {
     {.prescaler = 7, .period = 45999, .flash_enabled = false, .type = MANUAL_SPEED},  // S_1_2000, 23ms
     {.prescaler = 7, .period = 53999, .flash_enabled = false, .type = MANUAL_SPEED},  // S_1_1000, 27ms
@@ -48,4 +48,3 @@ struct shutter_speed_timing ShutterSpeedTiming[] = {
     {.prescaler = 0, .period =0, .flash_enabled = true, .type = AUTO_MODE},           // AUTO (handled separately)
     {.prescaler = 0, .period =0, .flash_enabled = true, .type = AUTO_F_MODE}          // AUTO_F (handled separately)
 };
-#endif

@@ -60,7 +60,7 @@ extern const uint8_t Y_DELAY;
 extern const int32_t ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
 
 #if FUZZY_MANUAL_MODE
-struct shutter_speed_timing{
+struct fuzzy_shutter_speed_timing{
     uint16_t min_prescaler;
     uint16_t min_period;
     uint16_t max_prescaler;
@@ -68,16 +68,18 @@ struct shutter_speed_timing{
     bool flash_enabled;
     enum setting_type type;
 };
-#else
+#endif
 struct shutter_speed_timing{
     uint16_t prescaler;
     uint16_t period;
     bool flash_enabled;
     enum setting_type type;
 };
-#endif
 
 extern struct shutter_speed_timing ShutterSpeedTiming[];
+#if FUZZY_MANUAL_MODE
+extern struct fuzzy_shutter_speed_timing FuzzyShutterSpeedTiming[];
+#endif
 
 #define FLASH_USER_DATA_ADDR  (0x08000000 + 32*1024 - 2048)
 
