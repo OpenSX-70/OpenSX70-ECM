@@ -1,6 +1,6 @@
-# OpenSX70-Core
+# OpenSX70-ECM
 
-This repository contains the OpenSX70 STM32 firmware project.
+This repository contains the OpenSX70 ECM STM32 firmware project.
 
 ## Compile Requirements
 

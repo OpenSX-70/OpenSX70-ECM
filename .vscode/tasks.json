@@ -10,7 +10,7 @@
 				"Debug"
 			],
 			"options": {
-				"cwd": "${workspaceFolder}/OpenSX70_Core"
+				"cwd": "${workspaceFolder}/OpenSX70_ECM"
 			},
 			"problemMatcher": [],
 			"detail": "Configure CMake project"
@@ -25,7 +25,7 @@
 				"Debug"
 			],
 			"options": {
-				"cwd": "${workspaceFolder}/OpenSX70_Core"
+				"cwd": "${workspaceFolder}/OpenSX70_ECM"
 			},
 			"group": {
 				"kind": "build",
@@ -48,7 +48,7 @@
 				"Release"
 			],
 			"options": {
-				"cwd": "${workspaceFolder}/OpenSX70_Core"
+				"cwd": "${workspaceFolder}/OpenSX70_ECM"
 			},
 			"problemMatcher": [],
 			"detail": "Configure CMake project for Release"
@@ -63,7 +63,7 @@
 				"Release"
 			],
 			"options": {
-				"cwd": "${workspaceFolder}/OpenSX70_Core"
+				"cwd": "${workspaceFolder}/OpenSX70_ECM"
 			},
 			"group": "build",
 			"problemMatcher": [
@@ -82,7 +82,7 @@
 				"-E",
 				"rm",
 				"-rf",
-				"${workspaceFolder}/OpenSX70_Core/build"
+				"${workspaceFolder}/OpenSX70_ECM/build"
 			],
 			"problemMatcher": [],
 			"detail": "Clean build directory"

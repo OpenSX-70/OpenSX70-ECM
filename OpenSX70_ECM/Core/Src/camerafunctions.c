@@ -1,6 +1,5 @@
 #include "camerafunctions.h"
 
-
 volatile bool auto_timeout_flag = false;
 volatile bool tim16_timeout_flag = false;
 volatile bool tim17_timeout_flag = false;
@@ -158,6 +157,10 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     __HAL_TIM_CLEAR_FLAG(&htim17, TIM_FLAG_UPDATE);
     tim16_timeout_flag = false;
     tim17_timeout_flag = false;
+    htim16.Init.Prescaler = 15;
+    htim16.Init.Period = 55999;
+    htim17.Init.Prescaler = 3;
+    htim17.Init.Period = 47999;
 
     s2_ffa_mode();
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
@@ -171,7 +174,7 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
     HAL_Delay(Y_DELAY);
     sol2_low_power();
-    //HAL_SuspendTick();
+    HAL_SuspendTick();
 
     HAL_StatusTypeDef tim16_status = HAL_TIM_Base_Start_IT(&htim16);
     if (tim16_status != HAL_OK) {
@@ -216,12 +219,12 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
 }
 
-void manual_exposure(struct shutter_speed_timing timing){
+void manual_exposure(struct shutter_speed_timing *timing){
     HAL_Delay(Y_DELAY);
     HAL_SuspendTick();
 
-    htim3.Init.Prescaler = timing.prescaler;
-    htim3.Init.Period = timing.period;
+    htim3.Init.Prescaler = timing->prescaler;
+    htim3.Init.Period = timing->period;
 
     if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
     {
@@ -232,11 +235,12 @@ void manual_exposure(struct shutter_speed_timing timing){
     __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE);
     tim3_timeout_flag = false;
 
-    if(timing.flash_enabled){
+    if(timing->flash_enabled){
         HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
     }
 
     shutter_open();
+
     if(HAL_TIM_Base_Start_IT(&htim3) != HAL_OK) {
         HAL_TIM_Base_Start_IT(&htim3);
     }
@@ -244,17 +248,91 @@ void manual_exposure(struct shutter_speed_timing timing){
     while(!tim3_timeout_flag){
         
     }
-
-    if(timing.flash_enabled){
+    if(timing->flash_enabled){
         flash();
     }
 
     if(HAL_TIM_Base_Stop_IT(&htim3) != HAL_OK) {
         HAL_TIM_Base_Stop_IT(&htim3);
     }
+    exposure_finish();
+}
+
+#if FUZZY_MANUAL_MODE
+void fuzzy_manual_exposure(struct fuzzy_shutter_speed_timing *timing, meter_iso *iso_setting){
+
+    if(HAL_TIM_Base_Stop_IT(&htim16) != HAL_OK) {
+        HAL_TIM_Base_Stop_IT(&htim16);
+    }
+    if(HAL_TIM_Base_Stop_IT(&htim17) != HAL_OK) {
+        HAL_TIM_Base_Stop_IT(&htim17);
+    }
+    htim16.Init.Prescaler = timing->min_prescaler;
+    htim16.Init.Period = timing->min_period;
+    htim17.Init.Prescaler = timing->max_prescaler;
+    htim17.Init.Period = timing->max_period;
+    
+    if (HAL_TIM_Base_Init(&htim16) != HAL_OK)
+    {
+        Error_Handler();
+    }
+    if (HAL_TIM_Base_Init(&htim17) != HAL_OK)
+    {
+        Error_Handler();
+    }
+    
+    __HAL_TIM_SET_COUNTER(&htim16, 0);
+    __HAL_TIM_SET_COUNTER(&htim17, 0);
+    __HAL_TIM_CLEAR_FLAG(&htim16, TIM_FLAG_UPDATE);
+    __HAL_TIM_CLEAR_FLAG(&htim17, TIM_FLAG_UPDATE);
+    tim16_timeout_flag = false;
+    tim17_timeout_flag = false;
+
+    meter_set_iso(iso_setting);
+    watchdog_config(&current_settings->auto_exposure_threshold);
+
+    HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 1);
+
+    HAL_Delay(Y_DELAY);
+    HAL_SuspendTick();
+
+
+    if(timing->flash_enabled){
+        HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
+    }
+
+    __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
+    HAL_GPIO_WritePin(LM_RESET_GPIO_Port, LM_RESET_Pin, 0);
+
+    if(HAL_TIM_Base_Start_IT(&htim16) != HAL_OK) {
+        HAL_TIM_Base_Start_IT(&htim16);
+    }
+    if(HAL_TIM_Base_Start_IT(&htim17) != HAL_OK) {
+        HAL_TIM_Base_Start_IT(&htim17);
+    }
+
+    shutter_open();
+
+    while(!tim17_timeout_flag){
+       if(tim16_timeout_flag && __HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1)){
+           break;
+       } 
+    }
+
+    if(timing->flash_enabled){
+        flash();
+    }
+
+    if(HAL_TIM_Base_Stop_IT(&htim16) != HAL_OK) {
+        HAL_TIM_Base_Stop_IT(&htim16);
+    }
+    if(HAL_TIM_Base_Stop_IT(&htim17) != HAL_OK) {
+        HAL_TIM_Base_Stop_IT(&htim17);
+    }
 
     exposure_finish();
 }
+#endif
 
 void bulb_mode(){
     HAL_Delay(Y_DELAY);
@@ -286,13 +364,13 @@ void exposure_finish(){
     HAL_Delay(30);
     s2_usart_mode();
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 1);
+    while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
     if(multiple_exposure_flag){
-        while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
         HAL_TIM_Base_Start_IT(&htim14);
+        HAL_Delay(100);
         return;
     }
     else{
-        while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin));
         mirror_down();
         shutter_open();
         HAL_Delay(100);
