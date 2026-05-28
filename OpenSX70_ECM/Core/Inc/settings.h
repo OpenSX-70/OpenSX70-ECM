@@ -57,7 +57,6 @@ enum setting_type{
 
 extern const uint8_t POWER_DOWN_DELAY;
 extern const uint8_t Y_DELAY;
-extern const int32_t ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
 
 #if FUZZY_MANUAL_MODE
 struct fuzzy_shutter_speed_timing{
