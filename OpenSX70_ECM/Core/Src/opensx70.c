@@ -263,4 +263,5 @@ void s1_iso_swap(void){
         isoBlinked = true;
     }
     while(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET);
+    HAL_Delay(50);
 }
