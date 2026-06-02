@@ -44,6 +44,10 @@ Install with `pacman`:
 sudo pacman -Syu --needed cmake ninja arm-none-eabi-gcc arm-none-eabi-binutils
 ```
 
+## Compiling
+
+Once prereqs are installed, run `cmake --build  --preset Release` in the OpenSX70_ECM folder. The resulting binary (elf) file will be under OpenSX70_ECM/build/Release
+
 
 Currently the compile size for the debug build is too large for the SKU of STM32G0 we are using. Use the release preset until we move to a SKU with more flash.
 
