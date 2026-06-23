@@ -52,6 +52,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/meter.c
     Core/Src/peripheralport.c
     Core/Src/pollers.c
+    Core/Src/shutterbutton.c
 )
 
 # Add include paths
