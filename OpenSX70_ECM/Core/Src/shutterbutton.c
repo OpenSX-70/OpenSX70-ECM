@@ -49,8 +49,7 @@ void update_button_state(struct ShutterButton *button_state){
 
     if(S1T_changed){
         if(button_state->S1T_debounced_input_state){
-            if(button_state->S1F_state &&
-               ((invocation_time - button_state->S1F_pressed_timestamp) <= SIMULTANEOUS_PRESS_WINDOW)){
+            if(button_state->S1F_state && ((invocation_time - button_state->S1F_pressed_timestamp) <= SIMULTANEOUS_PRESS_WINDOW)){
                 button_state->simultaneous_press = true;
             } 
             else{
