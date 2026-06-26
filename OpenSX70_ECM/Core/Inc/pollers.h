@@ -3,6 +3,7 @@
 
 #include "peripheralport.h"
 #include "meter.h"
+#include "shutterbutton.h"
 
 extern volatile bool init_complete;
 

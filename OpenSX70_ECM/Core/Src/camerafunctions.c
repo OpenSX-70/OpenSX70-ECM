@@ -67,7 +67,7 @@ void mirror_up(){
 }
 
 void sonar_focus(){
-    if(HAL_GPIO_ReadPin(S1F_GPIO_Port, S1F_Pin)){
+    if(S1_state.S1F_state){
         HAL_GPIO_WritePin(S1F_FBW_GPIO_Port, S1F_FBW_Pin, GPIO_PIN_SET);
     }
     else{
@@ -358,7 +358,7 @@ void time_mode(){
 void exposure_finish(){
     HAL_ResumeTick();
     shutter_close();
-    
+    HAL_TIM_Base_Start_IT(&htim14); // Resume polling after exposure finished.
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
     HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 0);
     HAL_Delay(30);
@@ -375,7 +375,7 @@ void exposure_finish(){
         shutter_open();
         HAL_Delay(100);
     }
-    HAL_TIM_Base_Start_IT(&htim14); // Resume polling after exposure finished.
+    
 }
 
 void flash(){

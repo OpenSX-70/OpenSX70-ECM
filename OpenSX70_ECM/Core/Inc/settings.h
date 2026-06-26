@@ -37,7 +37,7 @@
 
 //---------------Shutter Button--------------------------------------------
 #define SHUTTER_BUTTON_DEBOUNCE_DELAY 5
-#define SIMULTANEOUS_PRESS_DELAY 500
+#define SIMULTANEOUS_PRESS_DELAY 300
 #define SIMULTANEOUS_PRESS_WINDOW 25
 //---------------END Shutter Button----------------------------------------
 
