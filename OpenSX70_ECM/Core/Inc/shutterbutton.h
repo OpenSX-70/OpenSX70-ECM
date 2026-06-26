@@ -23,6 +23,5 @@ struct ShutterButton {
 extern struct ShutterButton S1_state;
 
 void update_button_state(struct ShutterButton *button_state);
-void reset_button_state(struct ShutterButton *button_state);
 
 #endif // SHUTTERBUTTON_H

@@ -74,17 +74,3 @@ void update_button_state(struct ShutterButton *button_state){
         button_state->S1T_pressed_timestamp = invocation_time;
     }
 }
-
-void reset_button_state(struct ShutterButton *button_state) {
-    button_state->S1T_state = false;
-    button_state->S1F_state = false;
-    button_state->simultaneous_press = false;
-    button_state->S1T_pressed_timestamp = 0;
-    button_state->S1F_pressed_timestamp = 0;
-    button_state->S1T_debounced_input_state = false;
-    button_state->S1F_debounced_input_state = false;
-    button_state->S1T_candidate_state = false;
-    button_state->S1F_candidate_state = false;
-    button_state->S1T_debounce_timestamp = 0;
-    button_state->S1F_debounce_timestamp = 0;
-}
