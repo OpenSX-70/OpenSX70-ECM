@@ -40,10 +40,10 @@ typedef enum peripheral_state {
 } peripheral_state;
 
 typedef struct peripheral_device {
+    peripheral_type type;
     uint8_t selector;
     bool switch1;
     bool switch2;
-    peripheral_type type;
 } peripheral_device;
 
 void initialize_peripheral_device(peripheral_device *device);
