@@ -17,7 +17,9 @@ volatile bool init_complete = false;
 poller_state poller = STATE_POLL_WAIT;
 
 void poll(){
+    update_button_state(&S1_state);
     poller = POLLER_MACHINE[poller]();
+    
 }
 
 poller_state do_state_poll_wait(){

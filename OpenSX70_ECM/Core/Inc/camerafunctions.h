@@ -5,6 +5,7 @@
 #include "meter.h"
 #include "settings.h"
 #include "stm32g0xx_hal_tim.h"
+#include "shutterbutton.h"
 
 extern TIM_HandleTypeDef htim1;  // Solenoid PWM
 extern TIM_HandleTypeDef htim3;  // Auto exposure timeout. Maybe self timer after reconfig as well?

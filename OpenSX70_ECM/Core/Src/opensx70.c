@@ -50,7 +50,7 @@ camera_state do_state_darkslide (void){
     camera_state next_state = STATE_DARKSLIDE;
     if (HAL_GPIO_ReadPin(S8_GPIO_Port, S8_Pin) && !HAL_GPIO_ReadPin(S9_GPIO_Port, S9_Pin)){
         #if SHUTTERDARKSLIDE
-        if (HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
+        if (S1_state.S1T_state){  
         #endif
             darkslide_eject();
             next_state = return_state(&current_dongle_state);
@@ -70,7 +70,7 @@ camera_state do_state_darkslide (void){
 }
 
 camera_state do_state_noDongle (void){
-    if(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
+    if(S1_state.S1T_state){
         HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
         HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
 
@@ -81,7 +81,7 @@ camera_state do_state_noDongle (void){
 }
 
 camera_state do_state_flashBar (void){
-    if(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
+    if(S1_state.S1T_state){
         begin_exposure();
         auto_exposure_flashbar(&savedISO);
     }
@@ -89,7 +89,7 @@ camera_state do_state_flashBar (void){
 }
 
 camera_state do_state_dongle (void){
-    if(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
+    if(S1_state.S1T_state){
         if(get_switch_state(SELF_TIMER)){
             self_timer();
         }
@@ -103,7 +103,7 @@ camera_state do_state_dongle (void){
 camera_state do_state_multi_exp (void){
     bool mexpSwitchStatus = get_switch_state(MEXP_MODE);
 
-    if(HAL_GPIO_ReadPin(S1T_GPIO_Port, S1T_Pin) == GPIO_PIN_SET){
+    if(S1_state.S1T_state){
         if(mexpSwitchStatus){
             if(get_switch_state(SELF_TIMER)){
                 self_timer();

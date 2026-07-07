@@ -67,7 +67,7 @@ void mirror_up(){
 }
 
 void sonar_focus(){
-    if(HAL_GPIO_ReadPin(S1F_GPIO_Port, S1F_Pin)){
+    if(S1_state.S1F_state){
         HAL_GPIO_WritePin(S1F_FBW_GPIO_Port, S1F_FBW_Pin, GPIO_PIN_SET);
     }
     else{
@@ -173,7 +173,6 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     sol2_engage();
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
     HAL_Delay(Y_DELAY);
-    sol2_low_power();
     HAL_SuspendTick();
 
     HAL_StatusTypeDef tim16_status = HAL_TIM_Base_Start_IT(&htim16);
@@ -204,7 +203,7 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 1);
     HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 1);
     
-    sol2_disengage();
+    
     
     while(!__HAL_ADC_GET_FLAG(&hadc1, ADC_FLAG_AWD1) && !tim17_timeout_flag){
         //Wait for watchdog to trigger or ff timeout
@@ -214,7 +213,7 @@ void auto_exposure_flashbar(meter_iso *iso_setting){
         HAL_TIM_Base_Stop_IT(&htim17);
     }
 
-    
+    sol2_disengage();
     exposure_finish();
     __HAL_ADC_CLEAR_FLAG(&hadc1, ADC_FLAG_AWD1);
 }
@@ -358,7 +357,7 @@ void time_mode(){
 void exposure_finish(){
     HAL_ResumeTick();
     shutter_close();
-    
+    HAL_TIM_Base_Start_IT(&htim14); // Resume polling after exposure finished.
     HAL_GPIO_WritePin(FFA_POWER_EN_GPIO_Port, FFA_POWER_EN_Pin, 0);
     HAL_GPIO_WritePin(FF_PIN_GPIO_Port, FF_PIN_Pin, 0);
     HAL_Delay(30);
@@ -375,7 +374,7 @@ void exposure_finish(){
         shutter_open();
         HAL_Delay(100);
     }
-    HAL_TIM_Base_Start_IT(&htim14); // Resume polling after exposure finished.
+    
 }
 
 void flash(){
