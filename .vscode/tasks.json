@@ -76,6 +76,41 @@
 		},
 		{
 			"type": "shell",
+			"label": "CMake: Configure Bootloader Release",
+			"command": "cmake",
+			"args": [
+				"--preset",
+				"BootloaderRelease"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/OpenSX70_ECM"
+			},
+			"problemMatcher": [],
+			"detail": "Configure CMake project for Bootloader Release"
+		},
+		{
+			"type": "shell",
+			"label": "CMake: Build Bootloader Release",
+			"command": "cmake",
+			"args": [
+				"--build",
+				"--preset",
+				"BootloaderRelease"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/OpenSX70_ECM"
+			},
+			"group": "build",
+			"problemMatcher": [
+				"$gcc"
+			],
+			"detail": "Build the CMake project in Bootloader Release mode",
+			"dependsOn": [
+				"CMake: Configure Bootloader Release"
+			]
+		},
+		{
+			"type": "shell",
 			"label": "CMake: Clean",
 			"command": "cmake",
 			"args": [
