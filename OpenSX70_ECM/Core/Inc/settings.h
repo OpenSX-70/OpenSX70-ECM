@@ -86,7 +86,7 @@ extern struct shutter_speed_timing ShutterSpeedTiming[];
 extern struct fuzzy_shutter_speed_timing FuzzyShutterSpeedTiming[];
 #endif
 
-#define FLASH_USER_DATA_ADDR  (0x08000000 + 32*1024 - 2048)
+#define FLASH_USER_DATA_ADDR  (0x08000000 + 64*1024 - 2048)
 
 
 #endif

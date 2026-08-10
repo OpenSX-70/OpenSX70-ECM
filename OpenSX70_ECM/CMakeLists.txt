@@ -21,6 +21,21 @@ endif()
 # Set the project name
 set(CMAKE_PROJECT_NAME OpenSX70_ECM)
 
+option(OPENSX70_USE_BOOTLOADER
+    "Link the application after an 8 KiB bootloader"
+    OFF
+)
+
+if(OPENSX70_USE_BOOTLOADER)
+    set(OPENSX70_FLASH_ORIGIN 0x08002000)
+    set(OPENSX70_FLASH_LENGTH 0x0000D000) # 52 KiB after the 8 KiB bootloader
+    set(OPENSX70_VECTOR_OFFSET 0x00002000)
+else()
+    set(OPENSX70_FLASH_ORIGIN 0x08000000)
+    set(OPENSX70_FLASH_LENGTH 0x0000F000) # 60 KiB application maximum
+    set(OPENSX70_VECTOR_OFFSET 0x00000000)
+endif()
+
 # Enable compile command to ease indexing with e.g. clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
@@ -36,6 +51,16 @@ add_executable(${CMAKE_PROJECT_NAME})
 
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)
+
+# Keep the linked application address and the runtime vector table in sync.
+target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
+    "-Wl,--defsym=OPENSX70_FLASH_ORIGIN=${OPENSX70_FLASH_ORIGIN}"
+    "-Wl,--defsym=OPENSX70_FLASH_LENGTH=${OPENSX70_FLASH_LENGTH}"
+)
+target_compile_definitions(STM32_Drivers PRIVATE
+    USER_VECT_TAB_ADDRESS
+    VECT_TAB_OFFSET=${OPENSX70_VECTOR_OFFSET}U
+)
 
 # Link directories setup
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
